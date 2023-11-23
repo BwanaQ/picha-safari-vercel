@@ -1,0 +1,26 @@
+{% extends 'dashboard/_base_full.html' %}
+{% load static %}
+{% block title %}Login{% endblock title %}
+{% block content %}
+{% load crispy_forms_tags%}
+<div class="card card-login px-5 text-center" data-background="color" data-color="orange">
+    <div class="card-header">
+        <div class="logo-image-small">
+            <img src="{% static 'dashboard/images/logo.png' %}" style="width: 180px; height:auto;">
+        </div>
+        <h3 class="card-title">Login</h3>
+    </div>
+    <form method="post">
+        {% csrf_token %}
+        <div class="card-content">
+            {{ form|crispy }}
+        </div>
+        <div class="footer text-center">
+            <button type="submit" class="btn btn-fill btn-wd ">Login</button>
+            <div class="forgot">
+                <a href="{% url 'register' %}">You don't have an account?</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock content %}
