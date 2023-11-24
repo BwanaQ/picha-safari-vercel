@@ -99,10 +99,18 @@
                         </a>
                     </li>
                     <li>
+                        {% if request.user.is_authenticated %}
                         <a href="{% url 'logout' %}">
                             <i class="nc-icon nc-icon-danger nc-user-run text-danger"></i>
                             <p class="text-danger">Log Out</p>
                         </a>
+                        {% else %}
+                        <a href="{% url 'login' %}">
+                            <i class="nc-icon nc-icon-danger nc-user-run text-danger"></i>
+                            <p class="text-danger">Log In</p>'
+                        {% endif %}
+                        </a>
+
                     </li>
                 </ul>
             </div>
