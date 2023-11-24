@@ -63,7 +63,7 @@ def payment_checkout(request):
     amount = int(round(cart.final_price))
     account_reference = 'Picha-Safari Sandbox'
     transaction_desc = f'Payment for cart #{cart.id}'
-    callback_url = 'https://pichasafari.onrender.com/api/payments/lnm/'
+    callback_url = 'https://picha-safari-vercel.vercel.app/api/payments/lnm/'
     response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
     return HttpResponse(response)
 
