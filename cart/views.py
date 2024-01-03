@@ -5,8 +5,9 @@ from django.shortcuts import render
 from photo.models import Photo, Category, Tag
 from .models import Cart, CartItem
 import json
+from django.contrib.auth.decorators import login_required
 
-
+@login_required(login_url='login')
 def index(request):
     photos = Photo.objects.all()
     tags = Tag.objects.all()
@@ -16,6 +17,7 @@ def index(request):
     context = {"photos": photos, "cart":cart, "cart_items":cart_items, "tags": tags, "categories": categories}
     return render (request, "cart/photo_list.html", context)
 
+@login_required(login_url='login')
 def cart(request):
     if request.user.is_authenticated:
         cart = None
@@ -26,7 +28,7 @@ def cart(request):
     context = {"cart": cart, "items": cart_items}
     return render (request, "cart/cart.html", context)
 
-
+@login_required(login_url='login')
 def add_to_cart(request):
     data = json.loads(request.body)
     product_id = data["id"]
@@ -46,6 +48,7 @@ def add_to_cart(request):
 def remove_from_cart(request):
     pass
 
+@login_required(login_url='login')
 def checkout(request):
     cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
     cart_items = cart.cartItems.all()
@@ -53,6 +56,7 @@ def checkout(request):
     context = {"cart":cart, "cart_items":cart_items, "default_phone_number":default_phone_number}
     return render (request, "cart/checkout.html", context)
 
+@login_required(login_url='login')
 def payment_checkout(request):
     if request.user.is_authenticated:
         cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
