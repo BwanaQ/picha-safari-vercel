@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.vercel.app','.now.sh']
 
@@ -86,28 +86,28 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST'),
-        'PORT': config('DB_PORT'),
-    }
-}
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'URL': config('DATABASE_URL'),
-#         'NAME': config('PGDATABASE'),
-#         'USER': config('PGUSER'),
-#         'PASSWORD': config('POSTGRES_PASSWORD'),
-#         'HOST': config('PGHOST'),
-#         'PORT': config('PGPORT'),
+#         'NAME': config('DB_NAME'),
+#         'USER': config('DB_USER'),
+#         'PASSWORD': config('DB_PASSWORD'),
+#         'HOST': config('DB_HOST'),
+#         'PORT': config('DB_PORT'),
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'URL': config('DATABASE_URL'),
+        'NAME': config('PGDATABASE'),
+        'USER': config('PGUSER'),
+        'PASSWORD': config('POSTGRES_PASSWORD'),
+        'HOST': config('PGHOST'),
+        'PORT': config('PGPORT'),
+    }
+}
 
 # if not DATABASES['default']['NAME']:
 #     # Fallback to SQLite if no PostgreSQL settings provided
