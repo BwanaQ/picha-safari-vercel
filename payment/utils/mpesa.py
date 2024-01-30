@@ -44,6 +44,7 @@ class MpesaGateway:
         self.access_token_expiration = None
         self.shortcode = config('MPESA_SHORTCODE')
         self.consumer_key = config('MPESA_CONSUMER_KEY')
+        self.passkey = config('MPESA_PASSKEY')
         self.consumer_secret =  config('MPESA_CONSUMER_SECRET')
         self.password = self.generate_password()
         self.c2b_callback = 'https://picha-safari-vercel.vercel.app/payments/callback/'

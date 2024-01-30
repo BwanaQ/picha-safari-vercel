@@ -27,6 +27,6 @@ urlpatterns = [
     # dashboard URLs
     path('dashboard/', include('dashboard.urls')),
     path('api/payments/', include('mpesa.api.urls')),
-    path('payments/', include('payments.api.urls')),
+    path('payments/', include('payment.api.urls')),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
