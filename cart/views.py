@@ -65,7 +65,7 @@ def payment_checkout(request):
     # Use a Safaricom phone number that you have access to, for you to be able to view the prompt.
     phone_number = cart.user.phone_number
     amount = int(round(cart.final_price))
-    account_reference = 'PS-#{cart.id}'
+    account_reference = f'PS-#{cart.id}'
     transaction_desc = f'Checkout Payment'
     callback_url = 'https://picha-safari-vercel.vercel.app/api/payments/lnm/'
     response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
