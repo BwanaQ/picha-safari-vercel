@@ -7,65 +7,12 @@ from .models import Cart, CartItem
 import json
 from django.contrib.auth.decorators import login_required
 
-from payment.utils import mpesa
 import openpyxl as openpyxl
 from django.contrib import messages
 from django.conf import settings
 import time
 import traceback
 from django.contrib.auth import get_user_model
-
-User = get_user_model()
-def transform_phone_number(phone_number):
-    phonenumber = str(phone_number)
-    print(f"Trying ", phonenumber)
-    if not phonenumber:
-        return phonenumber
-    if phonenumber == "":
-        return phonenumber
-    if phonenumber.startswith('0'):
-        print("It starts with zero")
-        return '254' + phonenumber[1:]
-    elif phonenumber.startswith('+254'):
-        return phonenumber[1:]
-    else:
-        return phonenumber
-    
-def getDetails(request, user):
-    summarydictionary = {}
-
-    # Access AUTH_USER_MODEL fields
-    app_user = User.objects.get(id=user.id)
-    firstname = app_user.first_name
-    lastname = app_user.last_name
-    fullname = f"{firstname} {lastname}"
-    userid = app_user.id
-
-    if app_user.is_superuser:
-        summarydictionary['istheadmin'] = True
-    else :
-        summarydictionary['istheadmin'] = False
-
-    if request.user.is_authenticated:
-        cart = None
-        cart_items = []
-        cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
-        cart_items = cart.cartItems.all()
-
-    try:
-
-        summarydictionary['fullname'] = fullname
-        summarydictionary['userid'] = str(userid)[:5].upper()
-        summarydictionary['cart'] = cart
-        summarydictionary['cart_items'] = cart_items
-        summarydictionary['mobile'] = request.user.phone_number
-    except Exception as exception:
-        traceback_str = traceback.format_exc()
-        print(f"This is the error {traceback_str}")
-        pass
-
-    return summarydictionary
-
 
 
 @login_required(login_url='login')
@@ -131,40 +78,3 @@ def payment_checkout(request):
     callback_url = 'https://picha-safari-vercel.vercel.app/api/payments/lnm/'
     response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
     return HttpResponse(response)
-
-# """
-# {    
-#    "Body": {        
-#       "stkCallback": {            
-#          "MerchantRequestID": "29115-34620561-1",            
-#          "CheckoutRequestID": "ws_CO_191220191020363925",            
-#          "ResultCode": 0,            
-#          "ResultDesc": "The service request is processed successfully.",            
-#          "CallbackMetadata": {                
-#             "Item": [{                        
-#                "Name": "Amount",                        
-#                "Value": 1.00                    
-#             },                    
-#             {                        
-#                "Name": "MpesaReceiptNumber",                        
-#                "Value": "NLJ7RT61SV"                    
-#             },                    
-#             {                        
-#                "Name": "TransactionDate",                        
-#                "Value": 20191219102115                    
-#             },                    
-#             {                        
-#                "Name": "PhoneNumber",                        
-#                "Value": 254708374149                    
-#             }]            
-#          }        
-#       }    
-#    }
-# }
-# """
-# from django.views.decorators.cache import never_cache
-
-# @never_cache
-def cartbuy(request):
-    pass
-   
