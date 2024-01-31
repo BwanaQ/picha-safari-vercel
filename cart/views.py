@@ -1,11 +1,70 @@
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django_daraja.mpesa.core import MpesaClient
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from photo.models import Photo, Category, Tag
 from .models import Cart, CartItem
 import json
 from django.contrib.auth.decorators import login_required
+from payment.models import Transaction
+from payment.utils import mpesa
+import openpyxl as openpyxl
+from django.contrib import messages
+from django.conf import settings
+import time
+import traceback
+
+def transform_phone_number(phone_number):
+    phonenumber = str(phone_number)
+    print(f"Trying ", phonenumber)
+    if not phonenumber:
+        return phonenumber
+    if phonenumber == "":
+        return phonenumber
+    if phonenumber.startswith('0'):
+        print("It starts with zero")
+        return '254' + phonenumber[1:]
+    elif phonenumber.startswith('+254'):
+        return phonenumber[1:]
+    else:
+        return phonenumber
+    
+def getDetails(request, user):
+    summarydictionary = {}
+
+    # Access AUTH_USER_MODEL fields
+    app_user = settings.AUTH_USER_MODEL.objects.get(id=user.id)
+    firstname = app_user.first_name
+    lastname = app_user.last_name
+    fullname = f"{firstname} {lastname}"
+    userid = app_user.id
+
+    if app_user.isadmin:
+        summarydictionary['istheadmin'] = True
+    else :
+        summarydictionary['istheadmin'] = False
+
+    if request.user.is_authenticated:
+        cart = None
+        cart_items = []
+        cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
+        cart_items = cart.cartItems.all()
+
+    try:
+
+        summarydictionary['fullname'] = fullname
+        summarydictionary['userid'] = str(userid)[:5].upper()
+        summarydictionary['cart'] = cart
+        summarydictionary['cart_items'] = cart_items
+        summarydictionary['mobile'] = request.user.phone_number
+    except Exception as exception:
+        traceback_str = traceback.format_exc()
+        print(f"This is the error {traceback_str}")
+        pass
+
+    return summarydictionary
+
+
 
 @login_required(login_url='login')
 def index(request):
@@ -101,3 +160,57 @@ def payment_checkout(request):
    }
 }
 """
+from django.views.decorators.cache import never_cache
+
+@never_cache
+def cartbuy(request):
+    gateway = mpesa.MpesaGateway()
+    if request.user.is_authenticated:
+        cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
+        user = request.user
+        summarydictionary = getDetails(request, user)
+        amount = int(round(cart.final_price))
+        purpose= "CHECKOUT"
+    else:
+        return redirect('cart-home')
+
+    mobile = cart.user.phone_number
+    summarydictionary['mobile'] = mobile
+    if request.method == 'POST':
+        print("It is a post request")
+        therequest = request.POST
+        thedictionary = therequest.dict()
+
+        print(thedictionary)
+
+        for value in thedictionary.items():
+            thestring = value[1]
+            print(thestring)
+            start_index = thestring.find('254')
+            end_index = start_index + 12
+            mobile = transform_phone_number(thestring[start_index:end_index])
+
+        timestamp = time.time()
+        gateway.stk_push_request(amount, mobile, cart, user, purpose, timestamp)
+
+        iscomplete = False
+        start_time = time.time()
+        while not iscomplete and time.time() - start_time < 60:
+            status = Transaction.objects.filter(timestamp=timestamp).get().status
+            print(f"Checking -- {status}")
+            if status == "CANCELLED" or status == "FAILED":
+                iscomplete = True
+                return JsonResponse({'success': False})
+            elif status == "COMPLETE":
+                iscomplete = True
+                return JsonResponse({'success': True})
+
+        if not iscomplete:
+            return JsonResponse({'success': False})
+        return JsonResponse({'success': True})
+
+    else:
+        print("It is not post")
+    response = render(request, "payment.html", {"summary": summarydictionary})
+    return response
+

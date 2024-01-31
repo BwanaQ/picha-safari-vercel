@@ -388,16 +388,12 @@
 									Pay with Default Phone Number ({{default_phone_number}})
 								</label>
 								<br>
-								<label>
-									<input type="radio" name="phoneNumberOption" value="custom">
-									Pay with Another Phone Number:
-									<input type="text" id="customPhoneNumber" name="customPhoneNumber" placeholder="Enter custom number">
-								</label>
+
 								<br>
 								<div class="single-widget get-button">
 									<div class="content">
 										<div class="button">
-											<a href="{% url 'payment' %}" class="btn">proceed to checkout</a>
+											<a href="{% url 'final-payment' %}" class="btn">proceed to checkout</a>
 										</div>
 									</div>
 								</div>							</form>

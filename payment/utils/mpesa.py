@@ -79,10 +79,8 @@ class MpesaGateway:
     
 
     @Decorators.refresh_token
-    def stk_push_request(self, request, amount, mobile, cart, user, purpose, timestamp):
-        cart = None
-        if request.user.is_authenticated:
-            cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
+    def stk_push_request(self, amount, mobile, cart, user, purpose, timestamp):
+        cart = cart
 
         body = {
             "BusinessShortCode": self.shortcode,
@@ -103,20 +101,18 @@ class MpesaGateway:
             res = requests.post(self.checkout_url, json=body, headers=self.headers, timeout=30)
             res_data = res.json()
             if res.ok:
-                cart = None
-                if request.user.is_authenticated:
-                    cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
+                cart = cart
 
 
                 transaction = Transaction.objects.create(
-                    mobile = mobile,
-                    user = user,
-                    amount = cart.final_price,
-                    cart = cart,
-                    purpose = purpose,
-                    checkoutid=res_data["CheckoutRequestID"],
-                    timestamp=timestamp
-                )
+                mobile = mobile,
+                user = user,
+                amount = cart.final_price,
+                cart = cart,
+                purpose = purpose,
+                checkoutid=res_data["CheckoutRequestID"],
+                timestamp=timestamp
+            )
                 transaction.save()
 
                 data = {}
@@ -191,3 +187,5 @@ class MpesaGateway:
 
         transaction.save()
         return True
+    
+    
