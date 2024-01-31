@@ -31,6 +31,7 @@ class LNMCallbackUrlAPIView(CreateAPIView):
         aware_transaction_datetime = pytz.utc.localize(transaction_datetime)
 
         our_model = LNMOnline.objects.create(
+            cart=cart,
             CheckoutRequestID=checkout_request_id,
             MerchantRequestID=merchant_request_id,
             Amount=amount,

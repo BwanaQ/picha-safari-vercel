@@ -6,14 +6,16 @@ from photo.models import Photo, Category, Tag
 from .models import Cart, CartItem
 import json
 from django.contrib.auth.decorators import login_required
-from payment.models import Transaction
+
 from payment.utils import mpesa
 import openpyxl as openpyxl
 from django.contrib import messages
 from django.conf import settings
 import time
 import traceback
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 def transform_phone_number(phone_number):
     phonenumber = str(phone_number)
     print(f"Trying ", phonenumber)
@@ -33,13 +35,13 @@ def getDetails(request, user):
     summarydictionary = {}
 
     # Access AUTH_USER_MODEL fields
-    app_user = settings.AUTH_USER_MODEL.objects.get(id=user.id)
+    app_user = User.objects.get(id=user.id)
     firstname = app_user.first_name
     lastname = app_user.last_name
     fullname = f"{firstname} {lastname}"
     userid = app_user.id
 
-    if app_user.isadmin:
+    if app_user.is_superuser:
         summarydictionary['istheadmin'] = True
     else :
         summarydictionary['istheadmin'] = False
@@ -130,87 +132,39 @@ def payment_checkout(request):
     response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
     return HttpResponse(response)
 
-"""
-{    
-   "Body": {        
-      "stkCallback": {            
-         "MerchantRequestID": "29115-34620561-1",            
-         "CheckoutRequestID": "ws_CO_191220191020363925",            
-         "ResultCode": 0,            
-         "ResultDesc": "The service request is processed successfully.",            
-         "CallbackMetadata": {                
-            "Item": [{                        
-               "Name": "Amount",                        
-               "Value": 1.00                    
-            },                    
-            {                        
-               "Name": "MpesaReceiptNumber",                        
-               "Value": "NLJ7RT61SV"                    
-            },                    
-            {                        
-               "Name": "TransactionDate",                        
-               "Value": 20191219102115                    
-            },                    
-            {                        
-               "Name": "PhoneNumber",                        
-               "Value": 254708374149                    
-            }]            
-         }        
-      }    
-   }
-}
-"""
-from django.views.decorators.cache import never_cache
+# """
+# {    
+#    "Body": {        
+#       "stkCallback": {            
+#          "MerchantRequestID": "29115-34620561-1",            
+#          "CheckoutRequestID": "ws_CO_191220191020363925",            
+#          "ResultCode": 0,            
+#          "ResultDesc": "The service request is processed successfully.",            
+#          "CallbackMetadata": {                
+#             "Item": [{                        
+#                "Name": "Amount",                        
+#                "Value": 1.00                    
+#             },                    
+#             {                        
+#                "Name": "MpesaReceiptNumber",                        
+#                "Value": "NLJ7RT61SV"                    
+#             },                    
+#             {                        
+#                "Name": "TransactionDate",                        
+#                "Value": 20191219102115                    
+#             },                    
+#             {                        
+#                "Name": "PhoneNumber",                        
+#                "Value": 254708374149                    
+#             }]            
+#          }        
+#       }    
+#    }
+# }
+# """
+# from django.views.decorators.cache import never_cache
 
-@never_cache
+# @never_cache
 def cartbuy(request):
-    gateway = mpesa.MpesaGateway()
-    if request.user.is_authenticated:
-        cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
-        user = request.user
-        summarydictionary = getDetails(request, user)
-        amount = int(round(cart.final_price))
-        purpose= "CHECKOUT"
-    else:
-        return redirect('cart-home')
-
-    mobile = cart.user.phone_number
-    summarydictionary['mobile'] = mobile
-    if request.method == 'POST':
-        print("It is a post request")
-        therequest = request.POST
-        thedictionary = therequest.dict()
-
-        print(thedictionary)
-
-        for value in thedictionary.items():
-            thestring = value[1]
-            print(thestring)
-            start_index = thestring.find('254')
-            end_index = start_index + 12
-            mobile = transform_phone_number(thestring[start_index:end_index])
-
-        timestamp = time.time()
-        gateway.stk_push_request(amount, mobile, cart, user, purpose, timestamp)
-
-        iscomplete = False
-        start_time = time.time()
-        while not iscomplete and time.time() - start_time < 60:
-            status = Transaction.objects.filter(timestamp=timestamp).get().status
-            print(f"Checking -- {status}")
-            if status == "CANCELLED" or status == "FAILED":
-                iscomplete = True
-                return JsonResponse({'success': False})
-            elif status == "COMPLETE":
-                iscomplete = True
-                return JsonResponse({'success': True})
-
-        if not iscomplete:
-            return JsonResponse({'success': False})
-        return JsonResponse({'success': True})
-
-    else:
-        print("It is not post")
-    response = render(request, "payment.html", {"summary": summarydictionary})
-    return response
-
+    pass
+   

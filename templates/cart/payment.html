@@ -1,4 +1,5 @@
 {% extends 'cart/_base.html' %}
+{% load crispy_forms_tags %}
 {% block title %}Checkout{% endblock title %}
 {% block content %}
 {% if messages %}
@@ -12,20 +13,20 @@
 <div class="container-fluid">
     <div class="text-center">
         <div id="unpaid">
-            <h3>Pay KES {{summary.final_price}} for cart # {{summary.cart.id}}</h3>
+            <h3>Pay KES {{summary.cart.final_price}} for cart # {{summary.cart.id}}</h3>
         </div>
         <div id="paid" style="display:none;">
-            <h3 >Payment of KES {{summary.final_price}} Was Successful</h3>
+            <h3 >Payment of KES {{summary.cart.final_price}} Was Successful</h3>
             <p>Thank You!</p>
         </div>
     </div>
 
-   <form id="myForm" action="#" method="post">
+   <form id="myForm" action="{% url 'final-payment' %}" method="post">
         {% csrf_token %}
         {{ summary.form | crispy }}
         <label>Mobile :</label>
         <input style="padding: 2px" type="number" name="mobile" id="mobile" value="{{ summary.mobile }}" placeholder="254...">
-        <button  class="button" type="submit" id="submit" value="submit">Make Payment
+        <button  class="btn" type="submit" id="submit" value="submit">Make Payment
                 </button>
     </form>
     

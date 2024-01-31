@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'photo',
     'cart',
     'mpesa',
-    'payment',
+
 
 ]
 
