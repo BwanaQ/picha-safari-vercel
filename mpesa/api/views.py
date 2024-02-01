@@ -14,9 +14,11 @@ class LNMCallbackUrlAPIView(CreateAPIView):
     permission_classes = [AllowAny]
 
     def create(self, request):
+        print(f"this is request.data=======>{request.data}")
+
         if request.user.is_authenticated:
             cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
-        print(request.data, "this is request.data")
+        cart = cart
         merchant_request_id = request.data["Body"]["stkCallback"]["MerchantRequestID"]
         checkout_request_id = request.data["Body"]["stkCallback"]["CheckoutRequestID"]
         result_code = request.data["Body"]["stkCallback"]["ResultCode"]
