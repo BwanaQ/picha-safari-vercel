@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'cloudinary',
     'crispy_forms',
     'crispy_bootstrap4',
-    'django_daraja',
     'rest_framework',
     # My Apps
     'users',
