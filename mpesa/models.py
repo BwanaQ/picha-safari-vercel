@@ -3,8 +3,6 @@ from cart.models import Cart
 # Create your models here.
 
 class LNMOnline(models.Model):
-    cart = models.ForeignKey(Cart, related_name='transactions', on_delete=models.CASCADE, default=0)
-
     CheckoutRequestID = models.CharField(max_length=50, blank=True, null=True)
     MerchantRequestID = models.CharField(max_length=20, blank=True, null=True)
     ResultCode = models.IntegerField(blank=True, null=True)
