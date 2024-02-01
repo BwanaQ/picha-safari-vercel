@@ -3,5 +3,5 @@ from .views import *
 
 urlpatterns = [
     path('', index, name="index"),
-    path('daraja/stk_push', stk_push_callback, name="stk_push_callback"),
+    path('daraja/stk_push/', stk_push_callback, name="stk_push_callback"),
 ]
