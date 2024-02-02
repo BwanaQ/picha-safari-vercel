@@ -16,8 +16,8 @@ def register_url():
     request = {
         "ShortCode": keys.shortcode,
         "ResponseType": "Completed",
-        "ConfirmationURL": "https://mysterious-oasis-16355.herokuapp.com/api/payments/c2b-confirmation/",
-        "ValidationURL":   "https://mysterious-oasis-16355.herokuapp.com/api/payments/c2b-validation/",
+        "ConfirmationURL": "https://picha-safari-vercel.vercel.app/api/payments/c2b-confirmation/",
+        "ValidationURL":   "https://picha-safari-vercel.vercel.app/api/payments/c2b-validation/",
     }
 
     try:
