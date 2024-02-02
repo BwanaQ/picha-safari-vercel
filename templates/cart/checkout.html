@@ -382,7 +382,8 @@
 								</div>
 							</form> -->
 							<!--/ End Form -->
-							<form id="phoneNumberForm">
+							<form id="phoneNumberForm" action="{% url 'lnm-callback-url' %}" method="post">
+								{% csrf_token %}
 								<label>
 									<input type="radio" name="phoneNumberOption" value="default" checked>
 									Pay with Default Phone Number ({{default_phone_number}})
@@ -393,7 +394,7 @@
 								<div class="single-widget get-button">
 									<div class="content">
 										<div class="button">
-											<a href="{% url 'payment' %}" class="btn">proceed to checkout</a>
+											<button id="submit" type="submit" class="btn">proceed to checkout</a>
 										</div>
 									</div>
 								</div>							</form>

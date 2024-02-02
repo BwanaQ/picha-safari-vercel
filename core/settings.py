@@ -141,9 +141,11 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Nairobi'
 
 USE_I18N = True
+
+USE_L10N = True
 
 USE_TZ = True
 
@@ -157,7 +159,13 @@ STATICFILES_DIRS = [
 ]
 STATIC_ROOT=  os.path.join(BASE_DIR,'staticfiles_build', 'static')
 
-
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    "DEFAULT_PERMISSION_CLASSES": [
+        "rest_framework.permissions.IsAuthenticatedOrReadOnly"
+    ]
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -187,6 +195,17 @@ MESSAGE_TAGS = {
     message_constants.WARNING: 'warning',
     message_constants.ERROR: 'danger', 
 }
+
+CORS_REPLACE_HTTPS_REFERER = True
+HOST_SCHEME = "https://"
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_SECONDS = 1000000
+SECURE_FRAME_DENY = True
+
 
 # The Mpesa environment to use
 # Possible values: sandbox, production
@@ -228,3 +247,5 @@ MPESA_INITIATOR_USERNAME = config('MPESA_INITIATOR_USERNAME')
 # Plaintext password for initiator (to be used in B2C, B2B, AccountBalance and TransactionStatusQuery Transactions)
 
 MPESA_INITIATOR_SECURITY_CREDENTIAL = config('MPESA_INITIATOR_SECURITY_CREDENTIAL')
+
+
