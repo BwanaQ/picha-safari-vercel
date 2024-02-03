@@ -19,6 +19,9 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from mpesa.urls import mpesa_urls
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include ('cart.urls')),
@@ -26,5 +29,8 @@ urlpatterns = [
     path('users/', include('users.urls')),
     # dashboard URLs
     path('dashboard/', include('dashboard.urls')),
+    # mpesa wrapper URLs
+    path('mpesa/', include(mpesa_urls)),
+
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
