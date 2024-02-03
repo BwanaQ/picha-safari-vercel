@@ -1,6 +1,5 @@
 from django.http import JsonResponse
 from django.http import HttpResponse
-# from django_daraja.mpesa.core import MpesaClient
 from django.shortcuts import render, redirect, get_object_or_404
 from photo.models import Photo, Category, Tag
 from .models import Cart, CartItem
@@ -64,17 +63,4 @@ def checkout(request):
     context = {"cart":cart, "cart_items":cart_items, "default_phone_number":default_phone_number}
     return render (request, "cart/checkout.html", context)
 
-# @login_required(login_url='login')
-# def payment_checkout(request):
-#     if request.user.is_authenticated:
-#         cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
 
-#     cl = MpesaClient()
-#     # Use a Safaricom phone number that you have access to, for you to be able to view the prompt.
-#     phone_number = cart.user.phone_number
-#     amount = int(round(cart.final_price))
-#     account_reference = f'PS-#{cart.id}'
-#     transaction_desc = f'Checkout Payment'
-#     callback_url = 'https://picha-safari-vercel.vercel.app/api/payments/lnm/'
-#     response = cl.stk_push(phone_number, amount, account_reference, transaction_desc, callback_url)
-#     return HttpResponse(response)
