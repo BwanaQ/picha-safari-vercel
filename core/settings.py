@@ -45,13 +45,11 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
     'rest_framework',
-    'django_daraja',
     # My Apps
     'users',
     'dashboard',
     'photo',
     'cart',
-    'mpesa',
     'new_payment',
 
 
