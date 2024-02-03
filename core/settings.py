@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
     'rest_framework',
+    'mpesa',
     # My Apps
     'users',
     'dashboard',
@@ -205,45 +206,58 @@ SECURE_HSTS_SECONDS = 1000000
 SECURE_FRAME_DENY = True
 
 
-# The Mpesa environment to use
-# Possible values: sandbox, production
+MPESA_CONFIG = {
+    'CONSUMER_KEY': config('MPESA_CONSUMER_KEY'),
+    'CONSUMER_SECRET': config('MPESA_CONSUMER_SECRET'),
+    'CERTIFICATE_FILE': None,
+    'HOST_NAME': 'https://picha-safari-vercel.vercel.app',
+    'PASS_KEY': config('MPESA_PASSKEY'),
+    'SAFARICOM_API': 'https://sandbox.safaricom.co.ke',
+    'AUTH_URL': '/oauth/v1/generate?grant_type=client_credentials',
+    'SHORT_CODE': config('MPESA_SHORTCODE'),
+    'TILL_NUMBER': None,
+    'TRANSACTION_TYPE': 'CustomerBuyGoodsOnline',
+}
 
-MPESA_ENVIRONMENT = config('MPESA_ENVIRONMENT')
+# # The Mpesa environment to use
+# # Possible values: sandbox, production
 
-# Credentials for the daraja app
+# MPESA_ENVIRONMENT = config('MPESA_ENVIRONMENT')
 
-MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY')
-MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET')
+# # Credentials for the daraja app
 
-#Shortcode to use for transactions. For sandbox  use the Shortcode 1 provided on test credentials page
+# MPESA_CONSUMER_KEY = config('MPESA_CONSUMER_KEY')
+# MPESA_CONSUMER_SECRET = config('MPESA_CONSUMER_SECRET')
 
-MPESA_SHORTCODE = config('MPESA_SHORTCODE')
+# #Shortcode to use for transactions. For sandbox  use the Shortcode 1 provided on test credentials page
 
-# Shortcode to use for Lipa na MPESA Online (MPESA Express) transactions
-# This is only used on sandbox, do not set this variable in production
-# For sandbox use the Lipa na MPESA Online Shorcode provided on test credentials page
+# MPESA_SHORTCODE = config('MPESA_SHORTCODE')
 
-MPESA_EXPRESS_SHORTCODE = config('MPESA_EXPRESS_SHORTCODE')
+# # Shortcode to use for Lipa na MPESA Online (MPESA Express) transactions
+# # This is only used on sandbox, do not set this variable in production
+# # For sandbox use the Lipa na MPESA Online Shorcode provided on test credentials page
 
-# Type of shortcode
-# Possible values:
-# - paybill (For Paybill)
-# - till_number (For Buy Goods Till Number)
+# MPESA_EXPRESS_SHORTCODE = config('MPESA_EXPRESS_SHORTCODE')
 
-MPESA_SHORTCODE_TYPE = config('MPESA_SHORTCODE_TYPE')
+# # Type of shortcode
+# # Possible values:
+# # - paybill (For Paybill)
+# # - till_number (For Buy Goods Till Number)
 
-# Lipa na MPESA Online passkey
-# Sandbox passkey is available on test credentials page
-# Production passkey is sent via email once you go live
+# MPESA_SHORTCODE_TYPE = config('MPESA_SHORTCODE_TYPE')
 
-MPESA_PASSKEY = config('MPESA_PASSKEY')
+# # Lipa na MPESA Online passkey
+# # Sandbox passkey is available on test credentials page
+# # Production passkey is sent via email once you go live
 
-# Username for initiator (to be used in B2C, B2B, AccountBalance and TransactionStatusQuery Transactions)
+# MPESA_PASSKEY = config('MPESA_PASSKEY')
 
-MPESA_INITIATOR_USERNAME = config('MPESA_INITIATOR_USERNAME')
+# # Username for initiator (to be used in B2C, B2B, AccountBalance and TransactionStatusQuery Transactions)
 
-# Plaintext password for initiator (to be used in B2C, B2B, AccountBalance and TransactionStatusQuery Transactions)
+# MPESA_INITIATOR_USERNAME = config('MPESA_INITIATOR_USERNAME')
 
-MPESA_INITIATOR_SECURITY_CREDENTIAL = config('MPESA_INITIATOR_SECURITY_CREDENTIAL')
+# # Plaintext password for initiator (to be used in B2C, B2B, AccountBalance and TransactionStatusQuery Transactions)
+
+# MPESA_INITIATOR_SECURITY_CREDENTIAL = config('MPESA_INITIATOR_SECURITY_CREDENTIAL')
 
 
