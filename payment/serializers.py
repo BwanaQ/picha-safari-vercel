@@ -36,7 +36,7 @@ class SendSTKPushSerializer(serializers.Serializer):
         elif str(phonenumber)[0] == "0":
             phonenumber = "254" + phonenumber[1:]
 
-        callback_url = 'https://'
+        callback_url = 'https://picha-safari-vercel.vercel.app/payment/callback/'
         payment = pay.stk_push(phonenumber=phonenumber, amount=amount, callback_url=callback_url)
 
         res = payment.json()
