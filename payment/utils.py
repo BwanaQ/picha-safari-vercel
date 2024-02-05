@@ -98,7 +98,7 @@ class MpesaGateWay:
     def stk_push(self, phonenumber, amount, callback_url):
         if not isinstance(amount, int):
             raise MpesaInvalidParameterException('Amount must be an integer')
-    
+        callback_url = 'https://picha-safari-vercel.vercel.app/payment/callback/'
         request_data = {
             "BusinessShortCode": self.business_shortcode,
             "Password": self.password,
@@ -114,7 +114,7 @@ class MpesaGateWay:
         }
 
         try:
-            res = requests.post(self.checkout_url, json=request_data, headers=self.headers, timeout=30)
+            res = requests.post(callback_url, json=request_data, headers=self.headers, timeout=30)
             response = mpesa_response(res)
 
             return response
