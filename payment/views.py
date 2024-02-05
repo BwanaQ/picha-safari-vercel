@@ -3,8 +3,9 @@ from rest_framework import views, response, status
 
 from .serializers import SendSTKPushSerializer, MpesaResponseBodySerializer, TransactionSerializer
 from .models import MpesaResponseBody, Transaction
-
+from rest_framework.permissions import AllowAny
 class SendSTKPushView(views.APIView):
+    permission_classes=[AllowAny]
     def post(self, request, format=None):
         serializer = SendSTKPushSerializer(data=request.data)
         if serializer.is_valid():
@@ -13,6 +14,8 @@ class SendSTKPushView(views.APIView):
         return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 class MpesaCallbackView(views.APIView):
+    permission_classes=[AllowAny]
+
     def post(self, request, format=None):
         body = request.data
 
@@ -38,6 +41,8 @@ class MpesaCallbackView(views.APIView):
         return response.Response({"responses": serializer.data})
 
 class TransactionView(views.APIView):
+    permission_classes=[AllowAny]
+
     def get(self, request, format=None):
         transactions = Transaction.objects.all()
         serializer = TransactionSerializer(transactions, many=True)
