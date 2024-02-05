@@ -11,7 +11,7 @@ source views    add1. Create core project [x]
 12. List all photos in cart App [x]
 13. Add +cart button [x]
 14. Add jscript functionality for add to cart function[x]
-15. Add -cart button []
+15. Add -cart button [ ]
 16. Add jscript functionality for remove from cart function [x]
 17. Change list View in backend to datatable [!!] 
 
