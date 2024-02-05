@@ -25,7 +25,7 @@ def lipa_na_mpesa():
         "PartyA": keys.phone_number,
         "PartyB": keys.business_shortCode,
         "PhoneNumber": keys.phone_number,
-        "CallBackURL": "https://picha-safari-vercel.vercel.app/api/payments/lnm/",
+        "CallBackURL": "https://picha-safari-vercel.vercel.app/payment/callback/",
         "AccountReference": "test aware",
         "TransactionDesc": "Pay School Fees",
     }

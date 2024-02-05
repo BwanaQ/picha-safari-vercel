@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'dashboard',
     'photo',
     'cart',
+    'payment',
 
 
 ]

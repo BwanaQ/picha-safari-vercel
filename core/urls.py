@@ -19,7 +19,6 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-from mpesa.urls import mpesa_urls
 
 
 urlpatterns = [
@@ -30,7 +29,7 @@ urlpatterns = [
     # dashboard URLs
     path('dashboard/', include('dashboard.urls')),
     # mpesa wrapper URLs
-    path('mpesa/', include(mpesa_urls)),
+    path('payment/', include('payment.urls')),
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
