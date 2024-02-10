@@ -10,7 +10,6 @@ class PhotoListView(LoginRequiredMixin, ListView):
     model = Photo
     template_name = 'photo_list.html'
     context_object_name = 'photos'
-    paginate_by = 10 
     
     def get_queryset(self):
         return Photo.objects.filter(owner=self.request.user)
@@ -58,7 +57,6 @@ class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
     template_name = 'category_list.html'
     context_object_name = 'categories'
-    paginate_by = 10 
     
     def get_queryset(self):
         return Category.objects.all()
@@ -106,7 +104,6 @@ class TagListView(LoginRequiredMixin, ListView):
     model = Tag
     template_name = 'tag_list.html'
     context_object_name = 'tags'
-    paginate_by = 10 
     
     def get_queryset(self):
         return Tag.objects.all()

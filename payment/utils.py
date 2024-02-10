@@ -50,7 +50,7 @@ class MpesaGateWay:
         self.business_shortcode = config("MPESA_SHORTCODE")
         self.consumer_key = config("MPESA_CONSUMER_KEY")
         self.consumer_secret = config("MPESA_CONSUMER_SECRET")
-        self.access_token_url = config("ACCESS_TOKEN_URL")
+        self.access_token_url = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials"
         self.password = self.generate_password()
         self.checkout_url = config("CHECKOUT_URL")
 

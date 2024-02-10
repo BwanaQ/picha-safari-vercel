@@ -12,14 +12,18 @@
     </title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
         name='viewport' />
+
     <!--     Fonts and icons     -->
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
+    <!-- DataTables.net -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.css" />
     <!-- CSS Files -->
     <link href="{% static 'dashboard/css/bootstrap.min.css' %}" rel="stylesheet" />
     <link href="{% static 'dashboard/css/pd.min.css' %}" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="{% static 'dashboard/css/demo.css' %}" rel="stylesheet" />
+
 </head>
 
 <body class="">
@@ -27,7 +31,7 @@
         <div class="sidebar" data-color="white" data-active-color="danger">
             <div class="logo">
                 <!-- <a href="https://www.creative-tim.com" class="simple-text logo-mini">
-                     <div class="logo-image-small">
+                     <div classs="logo-image-small">
             <img src="./assets/img/logo-small.png">
           </div> -->
                     <!-- <p>CT</p>
@@ -235,12 +239,53 @@
     <script src="{% static 'dashboard/js/bootstrap-notify.js' %}"></script>
     <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="{% static 'dashboard/js/paper-dashboard.min.js' %}" type="text/javascript"></script>
+    <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.js"></script>
+
     <script type="application/javascript">
         $('input[type="file"]').change(function(e){
             var fileName = e.target.files[0].name;
             $('.custom-file-label').html(fileName);
         });
     </script>
+    <script>
+        $(document).ready(function() {
+          $('#datatable').DataTable({
+            "pagingType": "full_numbers",
+            "lengthMenu": [
+              [10, 25, 50, -1],
+              [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            language: {
+              search: "_INPUT_",
+              searchPlaceholder: "Search records",
+            }
+    
+          });
+    
+          var table = $('#datatable').DataTable();
+    
+          // Edit record
+          table.on('click', '.edit', function() {
+            $tr = $(this).closest('tr');
+    
+            var data = table.row($tr).data();
+            alert('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
+          });
+    
+          // Delete a record
+          table.on('click', '.remove', function(e) {
+            $tr = $(this).closest('tr');
+            table.row($tr).remove().draw();
+            e.preventDefault();
+          });
+    
+          //Like record
+          table.on('click', '.like', function() {
+            alert('You clicked on Like button');
+          });
+        });
+      </script>
 </body>
 
 </html>
