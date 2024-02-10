@@ -1,6 +1,6 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.contrib import messages
+from django.contrib.messages.views import SuccessMessageMixin
 from .models import Photo, Tag, Category
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -19,7 +19,7 @@ class PhotoDetailView(LoginRequiredMixin, DetailView):
     template_name = 'photo/photo_detail.html'  
     context_object_name = 'photo'
 
-class PhotoCreateView(LoginRequiredMixin, CreateView):
+class PhotoCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Photo
     template_name = 'photo/photo_form.html'  
     fields = ['title', 'description', 'category', 'tags', 'image','webp_image', 'price'] 
@@ -31,7 +31,7 @@ class PhotoCreateView(LoginRequiredMixin, CreateView):
         response = super().form_valid(form)
         return response
 
-class PhotoUpdateView(LoginRequiredMixin, UpdateView):
+class PhotoUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Photo
     template_name = 'photo/photo_form.html'  
     fields = ['title', 'description', 'category', 'tags', 'price']
@@ -42,7 +42,7 @@ class PhotoUpdateView(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         return response
     
-class PhotoDeleteView(LoginRequiredMixin, DeleteView):
+class PhotoDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Photo
     template_name = 'photo/photo_confirm_delete.html'  
     success_url = reverse_lazy('photo_list')  
@@ -66,7 +66,7 @@ class CategoryDetailView(LoginRequiredMixin, DetailView):
     template_name = 'photo/category_detail.html'  
     context_object_name = 'category'
 
-class CategoryCreateView(LoginRequiredMixin, CreateView):
+class CategoryCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Category
     template_name = 'photo/category_form.html'  
     fields = ['name'] 
@@ -77,7 +77,7 @@ class CategoryCreateView(LoginRequiredMixin, CreateView):
         response = super().form_valid(form)
         return response
 
-class CategoryUpdateView(LoginRequiredMixin, UpdateView):
+class CategoryUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Category
     template_name = 'photo/category_form.html'  
     fields = ['name']
@@ -88,7 +88,7 @@ class CategoryUpdateView(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         return response
     
-class CategoryDeleteView(LoginRequiredMixin, DeleteView):
+class CategoryDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Category
     template_name = 'photo/category_confirm_delete.html'  
     success_url = reverse_lazy('category_list')  
@@ -113,7 +113,7 @@ class TagDetailView(LoginRequiredMixin, DetailView):
     template_name = 'photo/tag_detail.html'  
     context_object_name = 'tag'
 
-class TagCreateView(LoginRequiredMixin, CreateView):
+class TagCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Tag
     template_name = 'photo/tag_form.html'  
     fields = ['name'] 
@@ -124,7 +124,7 @@ class TagCreateView(LoginRequiredMixin, CreateView):
         response = super().form_valid(form)
         return response
 
-class TagUpdateView(LoginRequiredMixin, UpdateView):
+class TagUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     model = Tag
     template_name = 'photo/tag_form.html'  
     fields = ['name']
@@ -135,7 +135,7 @@ class TagUpdateView(LoginRequiredMixin, UpdateView):
         response = super().form_valid(form)
         return response
     
-class TagDeleteView(LoginRequiredMixin, DeleteView):
+class TagDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Tag
     template_name = 'photo/tag_confirm_delete.html'  
     success_url = reverse_lazy('tag_list')  
