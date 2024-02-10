@@ -3,6 +3,8 @@
 {% block navbarbrand %}My Photos{% endblock %}
 
 {% block content %}
+<div class="row">
+
 <div class="col-md-12">
     <a href="{% url 'photo_create' %}" class="btn btn-warning" style="color:black; float:right;">Add Photo</a>  
 </div>
@@ -105,6 +107,6 @@
       </div>
     </div>
 </div>
-
+</div>
 
   {% endblock content %}

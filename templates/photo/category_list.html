@@ -3,6 +3,8 @@
 {% block navbarbrand %}Categories{% endblock %}
 
 {% block content %}
+<div class="row">
+
 <div class="col-md-12">
   <a href="{% url 'category_create' %}" class="btn btn-warning" style="color:black; float:right;">Add Category</a>  
 </div>
@@ -72,5 +74,6 @@
 
       </div>
     </div>
+  </div>
   </div>
 {% endblock content %}
