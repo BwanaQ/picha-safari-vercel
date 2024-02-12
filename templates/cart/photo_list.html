@@ -19,7 +19,15 @@
 </div>
 <!-- End Breadcrumbs -->
 
+<!-- <div class="alert alert-success alert-dismissible fade show mx-5 my-1" role="alert">
+	<strong>Holy guacamole!</strong> You should check in on some of those fields below.
+	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+	  <span aria-hidden="true">&times;</span>
+	</button>
+</div> -->
+
 <!-- Product Style -->
+
 <section class="product-area shop-sidebar shop section">
 	<div class="container">
 		<div class="row">
@@ -56,10 +64,7 @@
 									</select>
 								</div>
 							</div>
-							<ul class="view-mode">
-								<li class="active"><a href="shop-grid.html"><i class="fa fa-th-large"></i></a></li>
-								<li><a href="shop-list.html"><i class="fa fa-th-list"></i></a></li>
-							</ul>
+ 
 						</div>
 						<!--/ End Shop Top -->
 					</div>
@@ -86,6 +91,7 @@
 										<button class="btn" title="Add to cart" value="{{photo.id}}" href="#">Add to
 											cart</button>
 									</div>
+
 								</div>
 							</div>
 							<div class="product-content">
@@ -98,6 +104,7 @@
 							</div>
 						</div>
 					</div>
+
 					<!-- Modal -->
 					<div class="modal fade" id="{{photo.id}}" tabindex="-1" role="dialog">
 						<div class="modal-dialog" role="document">
@@ -221,7 +228,40 @@
 					</div>
 					<!-- Modal end -->
 					{% endfor%}
+					<!-- <div class="col-3">
+						<h2>Shopping cart</h2>
+					</div> -->
+
+
 				</div>
+				<div class="row">
+					<div class="col-12">
+						<!-- Pagination -->
+						<div class="pagination-area">
+							<ul class="pagination">
+								{% if photos.has_previous %}
+									<li><a href="?page=1">First</a></li>
+									<li><a href="?page={{ photos.previous_page_number }}">Previous</a></li>
+								{% endif %}
+								{% for num in photos.paginator.page_range %}
+									{% if photos.number == num %}
+										<li class="active"><span>{{ num }}</span></li>
+									{% else %}
+										<li><a href="?page={{ num }}">{{ num }}</a></li>
+									{% endif %}
+								{% endfor %}
+								{% if photos.has_next %}
+									<li><a href="?page={{ photos.next_page_number }}">Next</a></li>
+									<li><a href="?page={{ photos.paginator.num_pages }}">Last</a></li>
+								{% endif %}
+							</ul>
+						</div>
+						<!-- End Pagination -->
+					</div>	
+				</div>
+			</div>
+			<div class="col-3">
+				<h3>Shopping Cart</h3>
 			</div>
 		</div>
 	</div>

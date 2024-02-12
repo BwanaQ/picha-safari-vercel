@@ -12,11 +12,21 @@ from django.conf import settings
 import time
 import traceback
 from django.contrib.auth import get_user_model
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @login_required(login_url='login')
 def index(request):
     photos = Photo.objects.all()
+    paginator = Paginator(photos, 9)
+    page_number = request.GET.get('page')
+    try:
+        photos = paginator.page(page_number)
+    except PageNotAnInteger:
+        photos=paginator.page(1)
+    except EmptyPage:
+        photos = paginator.page(paginator.num_pages)    
+    
+
     tags = Tag.objects.all()
     categories = Category.objects.all()
     cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
@@ -50,8 +60,14 @@ def add_to_cart(request):
         tally = cart.tally
         cart_items = list(cart.cartItems.all().values())  # Convert QuerySet to a list of dictionaries
         response_data = {"tally": tally, "cart_items": cart_items}
+
+        # Send success message to the client
+        success_message = f"{cart_item.photo.title} was added to cart successfully!"
+        response_data["success_message"] = success_message
+
     return JsonResponse(response_data, safe=False)
 
+@login_required(login_url='login')
 def remove_from_cart(request):
     pass
 
