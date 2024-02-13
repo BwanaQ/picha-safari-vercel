@@ -67,6 +67,9 @@ function addToCart(e){
                 top: 0,
                 behavior: 'smooth'  // Optional smooth scrolling
             });
+
+            // update cart items
+            updateCartItems(data.cart_items);
         }
     })
     .catch(err => {
@@ -76,3 +79,43 @@ function addToCart(e){
 
 }
 
+function updateCartItems(cartItems) {
+    let shoppingList = document.querySelector(".shopping-list");
+    shoppingList.innerHTML = ""; // Clear existing cart items
+    let totalAmount = 0;
+
+    cartItems.forEach(cartItem => {
+        // Fetch photo object using the photo_id
+        fetch(`api/v1/photos/${cartItem.photo_id}`) 
+            .then(response => response.json())
+            .then(photo => {
+                let listItem = document.createElement("li");
+                listItem.innerHTML = `
+                    <a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
+                    <a class="cart-img" href="#"><img src="https://res.cloudinary.com/thinc/${photo.webp_image}" style="width: 70px; height: auto" alt="${photo.title}"></a>
+                    <h4><a href="#">${photo.title}</a></h4>
+                    <p class="quantity">${cartItem.quantity}x - <span class="amount">Sh. ${photo.price}</span></p>
+                `;
+                shoppingList.appendChild(listItem);
+                console.log('QTY: '+cartItem.quantity)
+                console.log('PRICE: '+photo.price)
+
+                let subTotal = parseInt(cartItem.quantity)*parseInt(photo.price);
+                console.log('SUBTOTAL: '+subTotal)
+                totalAmount += subTotal
+                console.log('TOTAL: '+totalAmount)
+
+                let totalAmountElement = document.querySelector(".total-amount");
+                if (totalAmountElement) {
+                    totalAmountElement.textContent = `Sh. ${Number(totalAmount).toFixed(2)}`;
+                }
+            })  
+
+        
+            .catch(error => {
+                console.error('Error fetching photo:', error);
+            });
+    });
+    console.log('TOTAL From outside the loop: '+totalAmount)
+
+}

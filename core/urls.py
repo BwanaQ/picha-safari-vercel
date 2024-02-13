@@ -30,6 +30,8 @@ urlpatterns = [
     path('dashboard/', include('dashboard.urls')),
     # mpesa wrapper URLs
     path('payment/', include('payment.urls')),
+    # photo API
+    path('api/v1/', include('photo.api.urls')),
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
