@@ -24,11 +24,18 @@ add2cartBtns.forEach(btn =>{
     btn.addEventListener("click", addToCart)
 })
 
-
-
 function addToCart(e){
+    // JavaScript for the loading button
+    const button = document.getElementById("loading-button");
+    // Disable the button to prevent multiple clicks
+    button.disabled = true;
+
+    // Add the loading animation CSS class
+    button.classList.add("button-loader");
     let product_id = e.target.value
     let url = "/add_to_cart"
+    
+
     let data = {id:product_id}
 
     fetch(url, {
@@ -41,6 +48,12 @@ function addToCart(e){
     })
     .then(res => res.json())
     .then(data => {
+        // Re-enable the button
+        button.disabled = false;
+
+        // Remove the loading animation CSS class
+        button.classList.remove("button-loader");
+
         console.log(data.tally)
         console.log(data.cart_items)
 
@@ -107,7 +120,7 @@ function updateCartItems(cartItems) {
 
                 let totalAmountElement = document.querySelector(".total-amount");
                 if (totalAmountElement) {
-                    totalAmountElement.textContent = `Sh. ${Number(totalAmount).toFixed(2)}`;
+                    totalAmountElement.textContent = `Sh. ${Number(totalAmount).toFixed(1)}`;
                 }
             })  
 
