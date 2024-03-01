@@ -45,7 +45,6 @@ INSTALLED_APPS = [
     'crispy_forms',
     'crispy_bootstrap4',
     'rest_framework',
-    'mpesa',
     'paypal.standard.ipn',
     # My Apps
     'users',
