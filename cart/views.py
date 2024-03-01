@@ -1,18 +1,20 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+
 from photo.models import Photo, Category, Tag
 from .models import Cart, CartItem
 import json
-from django.contrib.auth.decorators import login_required
-
+from paypal.standard.forms import PayPalPaymentsForm
 import openpyxl as openpyxl
-from django.contrib import messages
-from django.conf import settings
 import time
 import traceback
-from django.contrib.auth import get_user_model
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 @login_required(login_url='login')
 def index(request):
@@ -79,4 +81,29 @@ def checkout(request):
     context = {"cart":cart, "cart_items":cart_items, "default_phone_number":default_phone_number}
     return render (request, "cart/checkout.html", context)
 
+@login_required(login_url='login')
+def process_paypal_payment(request):
+    cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
+    cart_items = cart.cartItems.all()
+    host = request.get_host()  
+    paypal_dict = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': f'{cart.final_price}',
+        'item_name': f'Order # {cart.id}',
+        'invoice': f'{cart.id}',
+        'currency_code': 'USD',
+        'notify_url': f'http://{host}{reverse("paypal-ipn")}',
+        'return_url': f'http://{host}{reverse("paypal-return")}',
+        'cancel_url': f'http://{host}{reverse("paypal-cancel")}',
+    }
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    context = {'cart':cart,'cart_items':cart_items,'paypal_dict':paypal_dict,'form':form}
+    return render(request,'cart/process_paypal_payment.html', context)
 
+def paypal_return(request):
+    messages.success("Payment was successfull.")
+    return redirect("cart-home")    
+
+def paypal_cancel(request):
+    messages.error("Failed! Payment was cancelled.")
+    return redirect("cart-home")    
