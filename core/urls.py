@@ -32,6 +32,8 @@ urlpatterns = [
     path('payment/', include('payment.urls')),
     # photo API
     path('api/v1/', include('photo.api.urls')),
+    # paypal IPN
+    path('paypal/', include('paypal.standard.ipn.urls')),
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

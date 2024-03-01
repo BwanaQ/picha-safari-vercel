@@ -46,12 +46,14 @@ INSTALLED_APPS = [
     'crispy_bootstrap4',
     'rest_framework',
     'mpesa',
+    'paypal.standard.ipn',
     # My Apps
     'users',
     'dashboard',
     'photo',
     'cart',
     'payment',
+    'ppal',
 
 
 ]
@@ -253,3 +255,6 @@ MPESA_CONFIG = {
 # MPESA_INITIATOR_SECURITY_CREDENTIAL = config('MPESA_INITIATOR_SECURITY_CREDENTIAL')
 
 
+# paypal settings
+PAYPAL_TEST = True
+PAYPAL_RECEIVER_EMAIL = 'sb-fvofw25957115@business.example.com'

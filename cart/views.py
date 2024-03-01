@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from photo.models import Photo, Category, Tag
 from .models import Cart, CartItem
 import json
@@ -8,6 +9,9 @@ from django.contrib.auth.decorators import login_required
 
 import openpyxl as openpyxl
 from django.contrib import messages
+from django.conf import settings
+from decimal import Decimal
+from paypal.standard.forms import PayPalPaymentsForm
 from django.conf import settings
 import time
 import traceback
@@ -80,3 +84,34 @@ def checkout(request):
     return render (request, "cart/checkout.html", context)
 
 
+@login_required(login_url='login')
+def paypal_process_payment(request):
+    cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
+    cart_items = cart.cartItems.all()
+    host = request.get_host()
+
+    paypal_dict = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount':f'{cart.final_price}',
+        'item_name': f'Order #{cart.id}',
+        'invoice': f'{cart.id}',
+        'currency_code': 'USD',
+        'notify_url': f'http://{host}{reverse("paypal-ipn")}',
+        'return_url': f'http://{host}{reverse("paypal-reverse")}',
+        'cancel_return': f'http://{host}{reverse("paypal-cancel")}',
+    }
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    context = {'cart':cart,'form':form, 'cart_items':cart_items}
+    return render(request,'cart/paypal_process_payment.html', context)
+    
+def paypal_reverse(request):
+    cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
+    cart.completed = True
+    cart.save()
+    messages.success(request,'Success. Payment made via PayPal.')
+    return redirect('cart-home')
+
+def paypal_cancel(request):
+    messages.error(request, 'Failure. Payment via PayPal was cancelled.')
+
+    return redirect('cart-home')
