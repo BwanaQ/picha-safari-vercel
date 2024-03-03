@@ -92,9 +92,9 @@ def process_paypal_payment(request):
         'item_name': f'Order # {cart.id}',
         'invoice': f'{cart.id}',
         'currency_code': 'USD',
-        'notify_url': f'http://{host}{reverse("paypal-ipn")}',
-        'return_url': f'http://{host}{reverse("paypal-return")}',
-        'cancel_url': f'http://{host}{reverse("paypal-cancel")}',
+        'notify_url': f'https://{host}{reverse("paypal-ipn")}',
+        'return_url': f'https://{host}{reverse("paypal-return")}',
+        'cancel_url': f'https://{host}{reverse("paypal-cancel")}',
     }
     form = PayPalPaymentsForm(initial=paypal_dict)
     context = {'cart':cart,'cart_items':cart_items,'paypal_dict':paypal_dict,'form':form}
