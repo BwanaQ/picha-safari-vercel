@@ -28,8 +28,8 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.vercel.app','.now.sh']
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.vercel.app','.now.sh','012d-154-159-252-101.ngrok-free.app']
+# ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -67,7 +67,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
+SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'
 ROOT_URLCONF = 'core.urls'
 LOGIN_REDIRECT_URL = 'cart-home' 
 TEMPLATES = [
