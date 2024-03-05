@@ -255,5 +255,5 @@ MPESA_CONFIG = {
 
 
 # PAYPAL CREDS
-PAYPAL_TEST = True
 PAYPAL_RECEIVER_EMAIL='sb-fvofw25957115@business.example.com'
+PAYPAL_TEST = True
