@@ -104,6 +104,11 @@ def process_paypal_payment(request):
 
 @csrf_exempt
 def paypal_return(request):
+    cart = Cart.objects.filter(user=request.user, completed=False).first()
+    if cart:
+        cart.completed = True
+        cart.save()
+
     messages.success(request,"Payment was successfull.")
     return redirect("cart-home")    
 
