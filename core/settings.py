@@ -99,15 +99,25 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'URL': config('DATABASE_URL'),
+#         'NAME': config('PGDATABASE'),
+#         'USER': config('PGUSER'),
+#         'PASSWORD': config('RW_POSTGRES_PASSWORD'),
+#         'HOST': config('PGHOST'),
+#         'PORT': config('PGPORT'),
+#     }
+# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'URL': config('DATABASE_URL'),
-        'NAME': config('PGDATABASE'),
-        'USER': config('PGUSER'),
-        'PASSWORD': config('POSTGRES_PASSWORD'),
-        'HOST': config('PGHOST'),
-        'PORT': config('PGPORT'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get("SB_DATABASE"),
+        'USER': os.environ.get("SB_USER"),
+        'PASSWORD': os.environ.get("SB_PASSWORD"),
+        'HOST': os.environ.get("SB_HOST"),
+        'PORT': os.environ.get("SB_PORT"),
     }
 }
 
