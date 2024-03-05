@@ -104,10 +104,10 @@ def process_paypal_payment(request):
 
 @csrf_exempt
 def paypal_return(request):
-    messages.success("Payment was successfull.")
+    messages.success(request,"Payment was successfull.")
     return redirect("cart-home")    
 
 @csrf_exempt
 def paypal_cancel(request):
-    messages.error("Failed! Payment was cancelled.")
+    messages.error(request,"Failed! Payment was cancelled.")
     return redirect("cart-home")    
