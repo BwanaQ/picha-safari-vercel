@@ -28,7 +28,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.vercel.app','.now.sh','012d-154-159-252-101.ngrok-free.app']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.vercel.app','.now.sh']
 # ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -99,27 +99,27 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #     }
 # }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'URL': config('DATABASE_URL'),
-#         'NAME': config('PGDATABASE'),
-#         'USER': config('PGUSER'),
-#         'PASSWORD': config('RW_POSTGRES_PASSWORD'),
-#         'HOST': config('PGHOST'),
-#         'PORT': config('PGPORT'),
-#     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': os.environ.get("SB_DATABASE"),
-        'USER': os.environ.get("SB_USER"),
-        'PASSWORD': os.environ.get("SB_PASSWORD"),
-        'HOST': os.environ.get("SB_HOST"),
-        'PORT': os.environ.get("SB_PORT"),
+        'ENGINE': 'django.db.backends.postgresql',
+        'URL': config('DATABASE_URL'),
+        'NAME': config('PGDATABASE'),
+        'USER': config('PGUSER'),
+        'PASSWORD': config('PGPASSWORD'),
+        'HOST': config('PGHOST'),
+        'PORT': config('PGPORT'),
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': os.environ.get("SB_DATABASE"),
+#         'USER': os.environ.get("SB_USER"),
+#         'PASSWORD': os.environ.get("SB_PASSWORD"),
+#         'HOST': os.environ.get("SB_HOST"),
+#         'PORT': os.environ.get("SB_PORT"),
+#     }
+# }
 
 # if not DATABASES['default']['NAME']:
 #     # Fallback to SQLite if no PostgreSQL settings provided

@@ -72,15 +72,39 @@ def add_to_cart(request):
     return JsonResponse(response_data, safe=False)
 
 @login_required(login_url='login')
-def remove_from_cart(request):
-    pass
+def remove_from_cart(request, item_id):
+    try:
+        cart = Cart.objects.get(user=request.user, completed=False)
+        cart_item = get_object_or_404(CartItem, cart=cart, id=item_id)
+        cart_item.delete()
+        return JsonResponse({'message': 'Item removed from cart successfully.'})
+    except Cart.DoesNotExist:
+        return JsonResponse({'error': 'Cart not found.'}, status=404)
+    except CartItem.DoesNotExist:
+        return JsonResponse({'error': 'CartItem not found.'}, status=404)
 
 @login_required(login_url='login')
 def checkout(request):
     cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
     cart_items = cart.cartItems.all()
     default_phone_number = request.user.phone_number
-    context = {"cart":cart, "cart_items":cart_items, "default_phone_number":default_phone_number}
+
+
+    # PAYPAL
+    host = request.get_host()  
+    paypal_dict = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': f'{cart.final_price}',
+        'item_name': f'Order # {cart.id}',
+        'invoice': uuid.uuid4(),
+        'currency_code': 'USD',
+        'notify_url': f'http://{host}{reverse("paypal-ipn")}',
+        'return_url': f'http://{host}{reverse("paypal-return")}',
+        'cancel_url': f'http://{host}{reverse("paypal-cancel")}',
+    }
+    form = PayPalPaymentsForm(initial=paypal_dict)
+        
+    context = {"cart":cart, "cart_items":cart_items, "default_phone_number":default_phone_number,'paypal_dict':paypal_dict,'form':form}
     return render (request, "cart/checkout.html", context)
 
 @login_required(login_url='login')
