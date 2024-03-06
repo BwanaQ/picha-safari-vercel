@@ -51,22 +51,27 @@ def cart(request):
 
 @login_required(login_url='login')
 def add_to_cart(request):
+    response_data = {}
     data = json.loads(request.body)
     product_id = data["id"]
     product = Photo.objects.get(id=product_id)
 
     if request.user.is_authenticated:
         cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
-        cart_item, created =CartItem.objects.get_or_create(cart=cart, photo=product)
-        print(cart_item)
-        cart_item.quantity += 1
-        cart_item.save()
+        
+        # Check if the item already exists in the cart
+        cart_item, created = CartItem.objects.get_or_create(cart=cart, photo=product)
+        if not created:
+            # If the item already exists, just increment the quantity
+            cart_item.quantity += 1
+            cart_item.save()
+        
         tally = cart.tally
         cart_items = list(cart.cartItems.all().values())  # Convert QuerySet to a list of dictionaries
         response_data = {"tally": tally, "cart_items": cart_items}
 
         # Send success message to the client
-        success_message = f"{cart_item.photo.title} was added to cart successfully!"
+        success_message = f"{product.title} was added to cart successfully!"
         response_data["success_message"] = success_message
 
     return JsonResponse(response_data, safe=False)
