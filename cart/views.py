@@ -104,8 +104,8 @@ def checkout(request):
         'invoice': uuid.uuid4(),
         'currency_code': 'USD',
         'notify_url': f'http://{host}{reverse("paypal-ipn")}',
-        'return_url': f'http://{host}{reverse("paypal-return")}',
-        'cancel_url': f'http://{host}{reverse("paypal-cancel")}',
+        'return': f'http://{host}{reverse("paypal-return")}',
+        'cancel_return': f'http://{host}{reverse("paypal-cancel")}',
     }
     form = PayPalPaymentsForm(initial=paypal_dict)
         
