@@ -29,8 +29,7 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.vercel.app','.now.sh']
-# ALLOWED_HOSTS = ['*']
-
+CSRF_TRUSTED_ORIGINS=["https://picha-safari-vercel.vercel.app"]
 # Application definition
 
 INSTALLED_APPS = [
@@ -110,16 +109,6 @@ DATABASES = {
         'PORT': config('PGPORT'),
     }
 }
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-#         'NAME': os.environ.get("SB_DATABASE"),
-#         'USER': os.environ.get("SB_USER"),
-#         'PASSWORD': os.environ.get("SB_PASSWORD"),
-#         'HOST': os.environ.get("SB_HOST"),
-#         'PORT': os.environ.get("SB_PORT"),
-#     }
-# }
 
 # if not DATABASES['default']['NAME']:
 #     # Fallback to SQLite if no PostgreSQL settings provided
