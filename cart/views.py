@@ -8,15 +8,23 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from decouple import config
 
 from photo.models import Photo, Category, Tag
 from .models import Cart, CartItem
+from .utils import PesaPalGateway
 import json
 from paypal.standard.forms import PayPalPaymentsForm
 import openpyxl as openpyxl
 import time
 import traceback
 import uuid
+import re
+import requests
+
+payment_url = config("PAYMENT_URL")
+gateway = PesaPalGateway()
+
 
 @login_required(login_url='login')
 def index(request):
@@ -92,24 +100,27 @@ def remove_from_cart(request, item_id):
 def checkout(request):
     cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
     cart_items = cart.cartItems.all()
-    default_phone_number = request.user.phone_number
+    phone_number = request.user.phone_number
+    pattern = re.compile(r'(\d{3})(\d+)(\d{2})')
+    reduced_number = pattern.sub(r'\1xxxxx\3', phone_number)
+    if request.method == 'POST':
+        phonenumber = phone_number
+        email = request.user.email
+        amount = cart.final_price
+        currency = "KES"
+        callback_url = "https://573b-197-248-239-47.ngrok-free.app/pesapal/callback" #Edit Accordingly
 
-
-    # PAYPAL
-    host = request.get_host()  
-    paypal_dict = {
-        'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount': f'{cart.final_price}',
-        'item_name': f'Order # {cart.id}',
-        'invoice': uuid.uuid4(),
-        'currency_code': 'USD',
-        'notify_url': f'http://{host}{reverse("paypal-ipn")}',
-        'return': f'http://{host}{reverse("paypal-return")}',
-        'cancel_return': f'http://{host}{reverse("paypal-cancel")}',
-    }
-    form = PayPalPaymentsForm(initial=paypal_dict)
+        try:
+            res = gateway.make_payment(phonenumber, email, amount, currency, callback_url)
+            
+            redirect_url = res['redirect_url']
+            return redirect(redirect_url)
         
-    context = {"cart":cart, "cart_items":cart_items, "default_phone_number":default_phone_number,'paypal_dict':paypal_dict,'form':form}
+        except Exception as e:
+            error_message = f"An error occurred: {str(e)}"
+            return HttpResponse(error_message)
+    
+    context = {"cart":cart, "cart_items":cart_items, "reduced_number":reduced_number}
     return render (request, "cart/checkout.html", context)
 
 @login_required(login_url='login')
@@ -145,3 +156,27 @@ def paypal_return(request):
 def paypal_cancel(request):
     messages.error(request,"Failed! Payment was cancelled.")
     return redirect("cart-home")    
+
+
+def paymentIPN(request):
+    orderTrackingId = request.GET.get("OrderTrackingId")
+    orderMerchantReference = request.GET.get("OrderMerchantReference")
+    orderNotificationType = request.GET.get("OrderNotificationType")
+
+    payment_url = f"https://cybqa.pesapal.com/pesapalv3/api/Transactions/GetTransactionStatus?orderTrackingId={orderTrackingId}"
+
+    token = gateway.getAuthorizationToken()
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer %s" % token,
+        "Accepts": "application/json"
+    }
+    payment_status = requests.get(payment_url, headers=headers)
+
+
+    return JsonResponse(payment_status.json())
+
+
+def callback(request):
+    return HttpResponse("Successs")

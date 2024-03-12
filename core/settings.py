@@ -28,8 +28,8 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.vercel.app','.now.sh']
-CSRF_TRUSTED_ORIGINS=["https://picha-safari-vercel.vercel.app"]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.vercel.app','.now.sh','573b-197-248-239-47.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS=["https://picha-safari-vercel.vercel.app","https://573b-197-248-239-47.ngrok-free.app" ]
 # Application definition
 
 INSTALLED_APPS = [
@@ -52,8 +52,7 @@ INSTALLED_APPS = [
     'photo',
     'cart',
     'payment',
-
-
+    'Pesapal',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'

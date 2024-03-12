@@ -34,6 +34,8 @@ urlpatterns = [
     path('api/v1/', include('photo.api.urls')),
     # paypal ipn urls
     path('paypal', include('paypal.standard.ipn.urls')),
+    # pesapal urls
+    path('pesapal/', include('Pesapal.urls')),
 
 
 ]
