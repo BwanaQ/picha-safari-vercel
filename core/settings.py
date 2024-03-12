@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     'photo',
     'cart',
     'payment',
-    'Pesapal',
 ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
