@@ -14,9 +14,9 @@
 	<link rel="icon" type="image/png" href="{% static 'dashboard/images/apple-icon.png' %}">
 	<!-- Web Font -->
 	<link href="https://fonts.googleapis.com/css?family=Poppins:200i,300,300i,400,400i,500,500i,600,600i,700,700i,800,800i,900,900i&display=swap" rel="stylesheet">
-	
+
 	<!-- StyleSheet -->
-	
+
 	<!-- Bootstrap -->
 	<link rel="stylesheet" href="{% static 'cart/css/bootstrap.css' %}">
 	<!-- Magnific Popup -->
@@ -39,7 +39,7 @@
     <link rel="stylesheet" href="{% static 'cart/css/owl-carousel.css' %}">
 	<!-- Slicknav -->
     <link rel="stylesheet" href="{% static 'cart/css/slicknav.min.css' %}">
-	
+
 	<!-- Eshop StyleSheet -->
 	<link rel="stylesheet" href="{% static 'cart/css/reset.css' %}">
 	<link rel="stylesheet" href="{% static 'cart/css/style.css' %}">
@@ -68,20 +68,32 @@
 		}
 
 		@keyframes spin {
-			0% { 
-				transform: rotate(0deg); 
+			0% {
+				transform: rotate(0deg);
 			}
-			100% { 
-				transform: rotate(360deg); 
+			100% {
+				transform: rotate(360deg);
 			}
+		}
+		/* Add this CSS code to set fixed height for image containers */
+		.product-img {
+			height: 200px; /* Adjust the height as needed */
+			overflow: hidden;
+		}
+
+		/* Add this CSS code to ensure images cover the entire container */
+		.product-img img {
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
 		}
 	</style>
 
-	
-	
+
+
 </head>
 <body class="js">
-	
+
 	<!-- Preloader -->
 	<div class="preloader">
 		<div class="preloader-inner">
@@ -92,7 +104,7 @@
 		</div>
 	</div>
 	<!-- End Preloader -->
-		
+
 		<!-- Header -->
 		<header class="header shop">
 			<!-- Topbar -->
@@ -185,7 +197,7 @@
 									<div class="shopping-item">
 										<div class="dropdown-cart-header">
 											<span id="tally-hover">{{cart.tally}} </span> Items
-											<a href="{% url 'cart' %}">View Cart</a>
+											<a href="{% url 'cart' %}">View Cart - {{cart.id}}</a>
 										</div>
 										<ul class="shopping-list">
 											{% for cart_item in cart_items %}
@@ -221,13 +233,13 @@
 								<div class="menu-area">
 									<!-- Main Menu -->
 									<nav class="navbar navbar-expand-lg">
-										<div class="navbar-collapse">	
-											<div class="nav-inner">	
+										<div class="navbar-collapse">
+											<div class="nav-inner">
 												<ul class="nav main-menu menu navbar-nav">
 													<li class="{% if request.resolver_match.url_name == 'cart-home' %}active{% endif %}"><a href="{% url 'cart-home' %}">Home</a></li>
 													<li class="{% if request.resolver_match.url_name == 'cart' %}active{% endif %}"><a href="{% url 'cart' %}">Cart<span class="new" id="tally2">{{cart.tally}}</span></a></li>
 													<li><a href="#">Contact Us</a></li>
-													<!-- <li><a href="#">Product</a></li>												
+													<!-- <li><a href="#">Product</a></li>
 													<li><a href="#">Service</a></li>
 													<li><a href="#">Shop<i class="ti-angle-down"></i><span class="new">New</span></a>
 														<ul class="dropdown">
@@ -236,7 +248,7 @@
 															<li><a href="checkout.html">Checkout</a></li>
 														</ul>
 													</li>
-													<li><a href="#">Pages</a></li>									
+													<li><a href="#">Pages</a></li>
 													<li><a href="#">Blog<i class="ti-angle-down"></i></a>
 														<ul class="dropdown">
 															<li><a href="blog-single-sidebar.html">Blog Single Sidebar</a></li>
@@ -247,7 +259,7 @@
 											</div>
 										</div>
 									</nav>
-									<!--/ End Main Menu -->	
+									<!--/ End Main Menu -->
 								</div>
 							</div>
 						</div>
@@ -257,13 +269,13 @@
 			<!--/ End Header Inner -->
 		</header>
 		<!--/ End Header -->
-		
+
               {% block content %}
                 {% endblock content %}
 
 
 		</section>
-		<!--/ End Product Style 1  -->	
+		<!--/ End Product Style 1  -->
 
 		<!-- Start Shop Newsletter  -->
 		<section class="shop-newsletter section">
@@ -287,11 +299,11 @@
 			</div>
 		</section>
 		<!-- End Shop Newsletter -->
-		
-		
-		
 
-		
+
+
+
+
 		<!-- Start Footer Area -->
 		<footer class="footer">
 			<!-- Footer Top -->
@@ -361,8 +373,8 @@
 			</div>
 		</footer>
 		<!-- /End Footer Area -->
-	
-	
+
+
     <!-- Jquery -->
     <script src="{% static 'cart/js/jquery.min.js' %}"></script>
     <script src="{% static 'cart/js/jquery-migrate-3.0.0.js' %}"></script>

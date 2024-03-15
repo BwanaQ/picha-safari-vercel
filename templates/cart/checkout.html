@@ -47,8 +47,11 @@
 					<div class="col-lg-8 col-12">
 						<div class="checkout-form">
 							<h2>Checkout Here</h2>
-							<p>Please note M-Pesa Express Checkout is currently <strong>down</strong> and we support PayPal Payments Exclusively.</p>
-							{{ form.render }}
+							<p>Please note M-Pesa Express Checkout is currently <strong>down</strong> and we support PesaPal Payments Exclusively.</p>
+							<form method="POST">
+								{% csrf_token %}
+								<button class="btn" type="submit" name="pay_btn">Pay now</button>
+							</form>
 						</div>
 					</div>
 				</div>

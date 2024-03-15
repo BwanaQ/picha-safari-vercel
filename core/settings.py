@@ -28,8 +28,8 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.vercel.app','.now.sh']
-CSRF_TRUSTED_ORIGINS=["https://picha-safari-vercel.vercel.app"]
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost','.vercel.app','.now.sh','bwanaq.pythonanywhere.com']
+CSRF_TRUSTED_ORIGINS=["https://picha-safari-vercel.vercel.app","https://bwanaq.pythonanywhere.com"]
 # Application definition
 
 INSTALLED_APPS = [
@@ -68,7 +68,7 @@ MIDDLEWARE = [
 ]
 SECURE_CROSS_ORIGIN_OPENER_POLICY='same-origin-allow-popups'
 ROOT_URLCONF = 'core.urls'
-LOGIN_REDIRECT_URL = 'cart-home' 
+LOGIN_REDIRECT_URL = 'cart-home'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -98,17 +98,17 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'URL': config('DATABASE_URL'),
-        'NAME': config('PGDATABASE'),
-        'USER': config('PGUSER'),
-        'PASSWORD': config('PGPASSWORD'),
-        'HOST': config('PGHOST'),
-        'PORT': config('PGPORT'),
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'URL': config('DATABASE_URL'),
+#         'NAME': config('PGDATABASE'),
+#         'USER': config('PGUSER'),
+#         'PASSWORD': config('PGPASSWORD'),
+#         'HOST': config('PGHOST'),
+#         'PORT': config('PGPORT'),
+#     }
+# }
 
 # if not DATABASES['default']['NAME']:
 #     # Fallback to SQLite if no PostgreSQL settings provided
@@ -118,6 +118,15 @@ DATABASES = {
 #     }
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "BwanaQ$picha-safari",
+        "USER": "BwanaQ",
+        "PASSWORD": "EMYx5Jp#iAqdE!@",
+        "HOST": "BwanaQ.mysql.pythonanywhere-services.com",
+    }
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -173,10 +182,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-cloudinary.config( 
-  cloud_name = config('CLOUDINARY_CLOUD_NAME'), 
-  api_key = config('CLOUDINARY_API_KEY'), 
-  api_secret = config('CLOUDINARY_API_SECRET') 
+cloudinary.config(
+  cloud_name = config('CLOUDINARY_CLOUD_NAME'),
+  api_key = config('CLOUDINARY_API_KEY'),
+  api_secret = config('CLOUDINARY_API_SECRET'),
+  api_proxy = 'http://proxy.server:3128'
 )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -195,7 +205,7 @@ MESSAGE_TAGS = {
     message_constants.INFO: 'info',
     message_constants.SUCCESS: 'success',
     message_constants.WARNING: 'warning',
-    message_constants.ERROR: 'danger', 
+    message_constants.ERROR: 'danger',
 }
 
 MPESA_CONFIG = {

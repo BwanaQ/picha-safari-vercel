@@ -8,15 +8,23 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from decouple import config
 
 from photo.models import Photo, Category, Tag
-from .models import Cart, CartItem
+from .models import Cart, CartItem, Transaction
+from .utils import PesaPalGateway
 import json
 from paypal.standard.forms import PayPalPaymentsForm
 import openpyxl as openpyxl
 import time
 import traceback
 import uuid
+import re
+import requests
+
+payment_url = config("PESAPAL_PAYMENT_URL")
+gateway = PesaPalGateway()
+
 
 @login_required(login_url='login')
 def index(request):
@@ -28,8 +36,8 @@ def index(request):
     except PageNotAnInteger:
         photos=paginator.page(1)
     except EmptyPage:
-        photos = paginator.page(paginator.num_pages)    
-    
+        photos = paginator.page(paginator.num_pages)
+
 
     tags = Tag.objects.all()
     categories = Category.objects.all()
@@ -45,7 +53,7 @@ def cart(request):
         cart_items = []
         cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
         cart_items = cart.cartItems.all()
-    
+
     context = {"cart": cart, "items": cart_items}
     return render (request, "cart/cart.html", context)
 
@@ -58,14 +66,14 @@ def add_to_cart(request):
 
     if request.user.is_authenticated:
         cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
-        
+
         # Check if the item already exists in the cart
         cart_item, created = CartItem.objects.get_or_create(cart=cart, photo=product)
         if not created:
             # If the item already exists, just increment the quantity
             cart_item.quantity += 1
             cart_item.save()
-        
+
         tally = cart.tally
         cart_items = list(cart.cartItems.all().values())  # Convert QuerySet to a list of dictionaries
         response_data = {"tally": tally, "cart_items": cart_items}
@@ -92,31 +100,35 @@ def remove_from_cart(request, item_id):
 def checkout(request):
     cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
     cart_items = cart.cartItems.all()
-    default_phone_number = request.user.phone_number
+    phone_number = request.user.phone_number
+    pattern = re.compile(r'(\d{3})(\d+)(\d{2})')
+    reduced_number = pattern.sub(r'\1xxxxx\3', phone_number)
+    if request.method == 'POST':
+        cart_id = str(cart.id)
+        phonenumber = phone_number
+        email = request.user.email
+        amount = cart.final_price
+        currency = "KES"
+        callback_url = "https://bwanaq.pythonanywhere.com/pesapal/callback" #Edit Accordingly
 
+        try:
+            res = gateway.make_payment(cart_id, phonenumber, email, amount, currency, callback_url)
+            print(res)
+            redirect_url = res['redirect_url']
+            return redirect(redirect_url)
 
-    # PAYPAL
-    host = request.get_host()  
-    paypal_dict = {
-        'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount': f'{cart.final_price}',
-        'item_name': f'Order # {cart.id}',
-        'invoice': uuid.uuid4(),
-        'currency_code': 'USD',
-        'notify_url': f'http://{host}{reverse("paypal-ipn")}',
-        'return': f'http://{host}{reverse("paypal-return")}',
-        'cancel_return': f'http://{host}{reverse("paypal-cancel")}',
-    }
-    form = PayPalPaymentsForm(initial=paypal_dict)
-        
-    context = {"cart":cart, "cart_items":cart_items, "default_phone_number":default_phone_number,'paypal_dict':paypal_dict,'form':form}
+        except Exception as e:
+            error_message = f"An error occurred: {str(e)}"
+            return HttpResponse(error_message)
+
+    context = {"cart":cart, "cart_items":cart_items, "reduced_number":reduced_number}
     return render (request, "cart/checkout.html", context)
 
 @login_required(login_url='login')
 def process_paypal_payment(request):
     cart, created = Cart.objects.get_or_create(user=request.user, completed=False)
     cart_items = cart.cartItems.all()
-    host = request.get_host()  
+    host = request.get_host()
     paypal_dict = {
         'business': settings.PAYPAL_RECEIVER_EMAIL,
         'amount': f'{cart.final_price}',
@@ -139,9 +151,78 @@ def paypal_return(request):
         cart.save()
 
     messages.success(request,"Payment was successfull.")
-    return redirect("cart-home")    
+    return redirect("cart-home")
 
 @csrf_exempt
 def paypal_cancel(request):
     messages.error(request,"Failed! Payment was cancelled.")
-    return redirect("cart-home")    
+    return redirect("cart-home")
+
+
+def paymentIPN(request):
+    orderTrackingId = request.GET.get("OrderTrackingId")
+    orderMerchantReference = request.GET.get("OrderMerchantReference")
+    orderNotificationType = request.GET.get("OrderNotificationType")
+
+
+    payment_url = f"https://cybqa.pesapal.com/pesapalv3/api/Transactions/GetTransactionStatus?orderTrackingId={orderTrackingId}"
+
+    token = gateway.getAuthorizationToken()
+
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer %s" % token,
+        "Accepts": "application/json"
+    }
+    response = requests.get(payment_url, headers=headers)
+
+    if response.status_code == 200:
+        transaction_status = response.json()
+
+        # Extract transaction data from response
+        payment_method = transaction_status.get('payment_method')
+        amount = transaction_status.get('amount')
+        created_date = transaction_status.get('created_date')
+        confirmation_code = transaction_status.get('confirmation_code')
+        payment_status_description = transaction_status.get('payment_status_description')
+        description = transaction_status.get('description')
+        message = transaction_status.get('message')
+        payment_account = transaction_status.get('payment_account')
+        call_back_url = transaction_status.get('call_back_url')
+        status_code = transaction_status.get('status_code')
+        merchant_reference = transaction_status.get('merchant_reference')
+        payment_status_code = transaction_status.get('payment_status_code')
+        currency = transaction_status.get('currency')
+
+        # Create transaction object and associate it with the cart
+        transaction = Transaction.objects.create(
+            payment_method=payment_method,
+            amount=amount,
+            created_date=created_date,
+            confirmation_code=confirmation_code,
+            payment_status_description=payment_status_description,
+            description=description,
+            message=message,
+            payment_account=payment_account,
+            call_back_url=call_back_url,
+            status_code=status_code,
+            merchant_reference=merchant_reference,
+            payment_status_code=payment_status_code,
+            currency=currency
+        )
+
+
+
+        return JsonResponse(response.json())
+    else:
+        return JsonResponse({'error': 'Failed to retrieve transaction status'}, status=400)
+
+
+def callback(request):
+
+    cart = Cart.objects.filter(user=request.user, completed=False).first()
+    if cart:
+        cart.completed = True
+        cart.save()
+    messages.success(request,"Payment was successfull.")
+    return redirect("cart-home")

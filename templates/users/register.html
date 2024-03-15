@@ -44,13 +44,14 @@
             <div class="col">
                 {{ form.password2|as_crispy_field }}
             </div>
-        </div>    
+        </div>
         <div class="login-buttons">
             <button type="submit" class="btn btn-warning btn-block btn-lg">Register</button>
         </div>
-        <div class="m-t-20 m-b-40 p-b-40 text-inverse">
-           Already have an account? click<a class="text-warning" href="{% url 'login' %}"style="color: #f39e19!!important;"> here</a> to login.
+        <div class="login-buttons my-2">
+            <a href="{% url 'login' %}" class="btn btn-primary btn-block btn-lg">Sign in</a>
         </div>
+
         <p class="text-center text-grey-darker">
             © Picha Safari All Right Reserved 2023
         </p>
