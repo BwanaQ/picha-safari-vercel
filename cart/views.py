@@ -4,11 +4,14 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import JsonResponse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
 from decouple import config
+
+
 
 from photo.models import Photo, Category, Tag
 from .models import Cart, CartItem, Transaction
@@ -22,7 +25,48 @@ import uuid
 import re
 import requests
 
-payment_url = config("PESAPAL_PAYMENT_URL")
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.messages.views import SuccessMessageMixin
+
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
+from .decorators import superuser_required
+from .forms import NewsletterForm
+from .models import NewsletterSubscription
+
+class TransactionListView(LoginRequiredMixin, ListView):
+    model = Transaction
+    template_name = 'transaction_list.html'
+    context_object_name = 'transactions'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = self.request.user  # Pass the user object to the template context
+        return context
+
+    def get_queryset(self):
+        return Transaction.objects.filter(payment_status_description="Completed")
+
+def transaction_detail_view(request, merchant_reference):
+    uuid_merchant_reference = uuid.UUID(merchant_reference)
+    transaction = get_object_or_404(Transaction, merchant_reference=merchant_reference,payment_status_description="Completed")
+    cart = get_object_or_404(Cart, id=uuid_merchant_reference)
+    cart_items = cart.cartItems.all()
+    context = {
+        'transaction': transaction,
+        'cart': cart,
+        'cart_items': cart_items,
+    }
+    return render(request, 'cart/transaction_detail.html', context)
+
+# def my_transactions(request):
+#     cart = Cart.objects
+#     transactions = Transaction.objects
+
+# payment_url = config("PESAPAL_PAYMENT_URL")
+
+
 gateway = PesaPalGateway()
 
 
@@ -226,3 +270,33 @@ def callback(request):
         cart.save()
     messages.success(request,"Payment was successfull.")
     return redirect("cart-home")
+
+def newsletter_signup(request):
+    form = NewsletterForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            # Check if the email is already subscribed
+            if NewsletterSubscription.objects.filter(email=email).exists():
+                # If already subscribed, you can handle this case
+                # Redirect to a thank you page or display a message
+                messages.info(request,"You are already Subscribed to our newsletter!.")
+                return redirect('cart-home')
+            else:
+                # If not subscribed, create a new subscription
+                subscription = NewsletterSubscription.objects.create(email=email)
+                # Optionally, you can send a confirmation email here
+                # Redirect to a thank you page or the homepage
+                messages.success(request,"You are now subscribed to our newsletter!.")
+                return HttpResponseRedirect('cart-home')
+    return render(request, 'base.html', {'form': form})
+
+
+# @require_POST
+# def ajax_search(request):
+#     search_query = request.POST.get('search', '')
+#     # Perform search query based on user input
+#     results = Photo.objects.filter(name__icontains=search_query)
+#     # Serialize the queryset to JSON
+#     data = [{'title': photo.title,'description':photo.description, 'category':photo.category, 'tags': photo.tags, 'webp_image':photo.webp_image,'price': photo.price, 'owner':photo.owner} for photo in results]
+#     return JsonResponse(data, safe=False)

@@ -12,7 +12,7 @@ function addToCart(e) {
     const button = document.getElementById("loading-button");
     button.disabled = true;
     button.classList.add("button-loader");
-    
+
     const product_id = e.target.value;
     const url = "/add_to_cart";
     const data = { id: product_id };
@@ -116,3 +116,6 @@ function updateTotalAmount(totalAmount) {
 document.querySelectorAll(".product-action-2 button").forEach(btn => {
     btn.addEventListener("click", addToCart);
 });
+
+
+

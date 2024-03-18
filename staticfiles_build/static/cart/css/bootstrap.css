@@ -4506,8 +4506,8 @@ tbody.collapse.show {
 .page-item.active .page-link {
     z-index: 2;
     color: #fff;
-    background-color: #007bff;
-    border-color: #007bff
+    background-color: #F49F1B;
+    border-color: #F49F1B;
 }
 
 .page-item.disabled .page-link {
@@ -4523,14 +4523,14 @@ tbody.collapse.show {
     padding: .5rem .75rem;
     margin-left: -1px;
     line-height: 1.25;
-    color: #007bff;
+    color: #F49F1B;
     background-color: #fff;
     border: 1px solid #ddd
 }
 
 .page-link:focus,
 .page-link:hover {
-    color: #0056b3;
+    color: #F49F1B;
     text-decoration: none;
     background-color: #e9ecef;
     border-color: #ddd

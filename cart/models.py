@@ -71,3 +71,11 @@ class Transaction(models.Model):
 
     def __str__(self):
         return str(f"{self.payment_status_description} {self.payment_method} {self.amount}")
+
+
+class NewsletterSubscription(models.Model):
+    email = models.EmailField(unique=True)
+    subscribed_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.email

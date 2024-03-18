@@ -153,7 +153,7 @@
 							<!--/ End Logo -->
 							<!-- Search Form -->
 							<div class="search-top">
-								<div class="top-search"><a href="#0"><i class="ti-search"></i></a></div>
+								<div class="top-search"><a href="#"><i class="ti-search"></i></a></div>
 								<!-- Search Form -->
 								<div class="search-top">
 									<form class="search-form">
@@ -197,7 +197,7 @@
 									<div class="shopping-item">
 										<div class="dropdown-cart-header">
 											<span id="tally-hover">{{cart.tally}} </span> Items
-											<a href="{% url 'cart' %}">View Cart - {{cart.id}}</a>
+											<a href="{% url 'cart' %}">View Cart</a>
 										</div>
 										<ul class="shopping-list">
 											{% for cart_item in cart_items %}
@@ -287,8 +287,9 @@
 							<div class="inner">
 								<h4>Newsletter</h4>
 								<p> Subscribe to our newsletter and get <span>10%</span> off your first purchase</p>
-								<form action="mail/mail.php" method="get" target="_blank" class="newsletter-inner">
-									<input name="EMAIL" placeholder="Your email address" required="" type="email">
+								<form action="{% url 'newsletter_signup' %}" method="post" target="_self" class="newsletter-inner">
+									{% csrf_token %}
+                                    <input name="email" placeholder="Your email address" required="" type="email">
 									<button class="btn">Subscribe</button>
 								</form>
 							</div>
@@ -359,7 +360,7 @@
 						<div class="row">
 							<div class="col-lg-6 col-12">
 								<div class="left">
-									<p>Copyright © 2023 <a href="#" target="_blank">picha Safari</a>  -  All Rights Reserved.</p>
+									<p>Copyright © 2023 <a href="#" target="_blank">Picha Safari</a>  -  All Rights Reserved.</p>
 								</div>
 							</div>
 							<div class="col-lg-6 col-12">
