@@ -287,9 +287,9 @@ def newsletter_signup(request):
                 subscription = NewsletterSubscription.objects.create(email=email)
                 # Optionally, you can send a confirmation email here
                 # Redirect to a thank you page or the homepage
-                messages.success(request,"You are now subscribed to our newsletter!.")
+                messages.success(request,"You are now subscribed to our newsletter.")
                 return HttpResponseRedirect('cart-home')
-    return render(request, 'base.html', {'form': form})
+    return render(request, 'cart/_base.html', {'form': form})
 
 
 # @require_POST
