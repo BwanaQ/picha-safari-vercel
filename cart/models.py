@@ -72,6 +72,25 @@ class Transaction(models.Model):
     def __str__(self):
         return str(f"{self.payment_status_description} {self.payment_method} {self.amount}")
 
+class WalletTransaction(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
+    cart = models.ForeignKey(Cart, null=True, blank=True, on_delete=models.CASCADE)
+    transaction = models.ForeignKey(Transaction, null=True, blank=True, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.id)
+
+    @property
+    def service_charge(self):
+        service_charge = self.amount * 0.15
+        return service_charge
+
+    @property
+    def available_amount(self):
+        available_amount = self.total - (self.amount * 0.15)
+        return available_amount
 
 class NewsletterSubscription(models.Model):
     email = models.EmailField(unique=True)

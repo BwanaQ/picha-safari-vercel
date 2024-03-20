@@ -266,3 +266,11 @@ MPESA_CONFIG = {
 # PAYPAL CREDS
 PAYPAL_RECEIVER_EMAIL='sb-fvofw25957115@business.example.com'
 PAYPAL_TEST = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = "Picha Safari"
+EMAIL_HOST_USER =  "thunjawax@gmail.com"
+EMAIL_HOST_PASSWORD = config('APP_PASSWORD')

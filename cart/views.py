@@ -16,6 +16,8 @@ from decouple import config
 from photo.models import Photo, Category, Tag
 from .models import Cart, CartItem, Transaction
 from .utils import PesaPalGateway
+from .services import create_wallet_transactions_from_cart, download_and_email_images
+
 import json
 from paypal.standard.forms import PayPalPaymentsForm
 import openpyxl as openpyxl
@@ -64,8 +66,7 @@ def transaction_detail_view(request, merchant_reference):
 #     cart = Cart.objects
 #     transactions = Transaction.objects
 
-# payment_url = config("PESAPAL_PAYMENT_URL")
-
+payment_url = config("PESAPAL_PAYMENT_URL")
 
 gateway = PesaPalGateway()
 
@@ -147,11 +148,12 @@ def checkout(request):
     phone_number = request.user.phone_number
     pattern = re.compile(r'(\d{3})(\d+)(\d{2})')
     reduced_number = pattern.sub(r'\1xxxxx\3', phone_number)
+    print(f"!!!!!!!!!!!CART PRICE!!!!!!!!!!!!!!!! = {round(cart.final_price, 2)}")
     if request.method == 'POST':
         cart_id = str(cart.id)
         phonenumber = phone_number
         email = request.user.email
-        amount = cart.final_price
+        amount = round(cart.final_price, 2)
         currency = "KES"
         callback_url = "https://bwanaq.pythonanywhere.com/pesapal/callback" #Edit Accordingly
 
@@ -268,6 +270,8 @@ def callback(request):
     if cart:
         cart.completed = True
         cart.save()
+    create_wallet_transactions_from_cart(cart)
+    download_and_email_images(cart)
     messages.success(request,"Payment was successfull.")
     return redirect("cart-home")
 
