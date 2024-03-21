@@ -79,8 +79,9 @@
                             <p>Tags</p>
                         </a>
                     </li>
-                    <li>
-                        <a href="javascript:;">
+                    <li class="{% if request.resolver_match.url_name == 'wallet_transactions' %}active{% endif %}">
+                        <!--wallet_transactions-->
+                        <a href="{% url 'wallet_transactions' %}">
                             <i class="nc-icon nc-money-coins"></i>
                             <p>My Wallet</p>
                         </a>

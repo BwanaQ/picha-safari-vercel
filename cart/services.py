@@ -18,6 +18,7 @@ def create_wallet_transactions_from_cart(cart):
         WalletTransaction.objects.create(
             user=cart_item.photo.owner,
             cart=cart,
+            cart_item=cart_item,
             transaction=transaction,
             amount=amount,
             created_at=timezone.now()

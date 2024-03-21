@@ -3,7 +3,7 @@ from .views import home_view
 from photo.views import PhotoListView, PhotoDetailView, PhotoCreateView, PhotoUpdateView, PhotoDeleteView
 from photo.views import TagListView, TagDetailView, TagCreateView, TagUpdateView, TagDeleteView
 from photo.views import CategoryListView, CategoryDetailView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView
-from cart.views import TransactionListView, transaction_detail_view
+from cart.views import TransactionListView, transaction_detail_view, WalletTransactionListView
 
 urlpatterns = [
     path('', home_view, name='dashboard-home'),
@@ -27,5 +27,7 @@ urlpatterns = [
     #transaction URLs
     path('transactions/', TransactionListView.as_view(), name='transaction_list'),
     path('transactions/<str:merchant_reference>/', transaction_detail_view, name='transaction_detail'),
+    # Wallet Transactions
+    path('wallet-transactions/', WalletTransactionListView.as_view(), name='wallet_transactions'),
 
 ]

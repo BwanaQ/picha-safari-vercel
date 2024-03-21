@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.conf import settings
 from photo.models import Photo
+from decimal import Decimal, ROUND_HALF_UP
 
 class Cart(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
@@ -75,6 +76,7 @@ class Transaction(models.Model):
 class WalletTransaction(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE)
     cart = models.ForeignKey(Cart, null=True, blank=True, on_delete=models.CASCADE)
+    cart_item = models.ForeignKey(CartItem, null=True, blank=True, on_delete=models.CASCADE)
     transaction = models.ForeignKey(Transaction, null=True, blank=True, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -84,12 +86,13 @@ class WalletTransaction(models.Model):
 
     @property
     def service_charge(self):
-        service_charge = self.amount * 0.15
+        service_charge = float(self.amount) * 0.15
+        service_charge = Decimal(str(service_charge)).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
         return service_charge
 
     @property
     def available_amount(self):
-        available_amount = self.total - (self.amount * 0.15)
+        available_amount = float(self.amount) - (float(self.amount) * 0.15)
         return available_amount
 
 class NewsletterSubscription(models.Model):

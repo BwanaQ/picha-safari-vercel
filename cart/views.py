@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Sum, F
 from django.http import JsonResponse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -14,7 +15,7 @@ from decouple import config
 
 
 from photo.models import Photo, Category, Tag
-from .models import Cart, CartItem, Transaction
+from .models import Cart, CartItem, Transaction, WalletTransaction
 from .utils import PesaPalGateway
 from .services import create_wallet_transactions_from_cart, download_and_email_images
 
@@ -36,6 +37,13 @@ from django.urls import reverse_lazy
 from .decorators import superuser_required
 from .forms import NewsletterForm
 from .models import NewsletterSubscription
+
+
+
+payment_url = config("PESAPAL_PAYMENT_URL")
+gateway = PesaPalGateway()
+
+
 
 class TransactionListView(LoginRequiredMixin, ListView):
     model = Transaction
@@ -62,13 +70,53 @@ def transaction_detail_view(request, merchant_reference):
     }
     return render(request, 'cart/transaction_detail.html', context)
 
+
+class WalletTransactionListView(LoginRequiredMixin, ListView):
+    model = WalletTransaction
+    template_name = 'cart/wallet_transaction_list.html'  # Update with your template name
+    context_object_name = 'wallet_transactions'
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        user = self.request.user
+        if user.is_superuser:
+            # Superadmins can see all wallet transactions
+            return queryset.all()
+        else:
+            # Other users can only see their own wallet transactions
+            return queryset.filter(user=user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        user = self.request.user
+        # Fetch wallet transactions queryset
+        wallet_transactions = self.get_queryset()
+
+        # Calculate total quantity
+        if user.is_superuser:
+            total_quantity = wallet_transactions.aggregate(total_quantity=Sum('cart_item__quantity'))['total_quantity'] or 0
+        else:
+            total_quantity = wallet_transactions.filter(user=user).aggregate(total_quantity=Sum('cart_item__quantity'))['total_quantity'] or 0
+
+        # Calculate total amount
+        total_amount = wallet_transactions.aggregate(total_amount=Sum('amount'))['total_amount'] or 0
+
+        # Calculate total service charge and available amount
+        total_service_charge = sum(transaction.service_charge for transaction in wallet_transactions)
+        total_available_amount = total_amount - total_service_charge
+
+        # Assign totals to context
+        context['total_quantity'] = total_quantity
+        context['total_amount'] = total_amount
+        context['total_service_charge'] = total_service_charge
+        context['total_available_amount'] = total_available_amount
+
+        return context
 # def my_transactions(request):
 #     cart = Cart.objects
 #     transactions = Transaction.objects
 
-payment_url = config("PESAPAL_PAYMENT_URL")
 
-gateway = PesaPalGateway()
 
 
 @login_required(login_url='login')
@@ -294,6 +342,7 @@ def newsletter_signup(request):
                 messages.success(request,"You are now subscribed to our newsletter.")
                 return HttpResponseRedirect('cart-home')
     return render(request, 'cart/_base.html', {'form': form})
+
 
 
 # @require_POST
