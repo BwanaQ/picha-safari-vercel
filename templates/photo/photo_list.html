@@ -74,6 +74,12 @@
                   <i class="fa fa-times"></i>
 
               </a>
+              
+              <a href="{% url 'approve_photo' photo.id %}"  rel="tooltip" title="Approve" class="btn btn-success btn-sm btn-icon">
+
+                <i class="fa fa-check"></i>
+
+            </a>
                 </td>
               </tr>
               {% endfor %}  

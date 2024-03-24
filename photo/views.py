@@ -1,9 +1,13 @@
+from django.http import HttpResponseBadRequest
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.messages.views import SuccessMessageMixin
 from .models import Photo, Tag, Category
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from .forms import PhotoCreateForm
 
 
 class PhotoListView(LoginRequiredMixin, ListView):
@@ -28,6 +32,8 @@ class PhotoCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     
     def form_valid(self, form):
         form.instance.owner = self.request.user
+        form.instance.approved = False  # Set approved to False by default
+        form.instance.comments = ""  # Set comments to empty by default
         response = super().form_valid(form)
         return response
 
@@ -41,7 +47,7 @@ class PhotoUpdateView(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         return response
-    
+
 class PhotoDeleteView(LoginRequiredMixin, SuccessMessageMixin, DeleteView):
     model = Photo
     template_name = 'photo/photo_confirm_delete.html'  

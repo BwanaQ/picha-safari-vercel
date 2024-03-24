@@ -3,8 +3,6 @@ from generics.models import Timestamp
 from cloudinary.models import CloudinaryField
 from django.conf import settings
 import cloudinary.uploader
-import uuid
-
 
 class Tag(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
@@ -32,9 +30,8 @@ class Photo(Timestamp):
         return f"{self.title} @ KES {self.price}"
 
     def save(self, *args, **kwargs):
-        # Convert and save the image to WebP format
-        if self.image:
-            # Check if the image is already stored in Cloudinary
+        # Convert and save the image to WebP format only if webp_image is not already set
+        if self.image and not self.webp_image:
             if hasattr(self.image, 'url'):
                 # If the image is already stored in Cloudinary, construct the WebP image URL
                 original_image_url = self.image.url
@@ -54,3 +51,13 @@ class Photo(Timestamp):
         
         # Call the superclass's save method to save the object
         super().save(*args, **kwargs)
+
+
+class Approval(models.Model):
+    photo = models.OneToOneField('Photo', on_delete=models.CASCADE, related_name='approval')
+    is_approved = models.BooleanField(default=False)
+    comments = models.TextField(blank=True, null=True)
+    approved_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='approvals', on_delete=models.CASCADE)
+    approved_time = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return f"{self.photo.title} - {self.is_approved}"
