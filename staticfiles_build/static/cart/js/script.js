@@ -97,7 +97,7 @@ function createCartItemElement(cartItem, photo) {
     const listItem = document.createElement("li");
     listItem.innerHTML = `
         <a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
-        <a class="cart-img" href="#"><img src="https://res.cloudinary.com/thinc/${photo.webp_image}" style="width: 70px; height: auto" alt="${photo.title}"></a>
+        <a class="cart-img" href="#"><img src="${photo.webp_image}" style="width: 70px; height: auto" alt="${photo.title}"></a>
         <h4><a href="#">${photo.title}</a></h4>
         <p class="quantity">${cartItem.quantity}x - <span class="amount">Sh. ${photo.price}</span></p>
     `;
