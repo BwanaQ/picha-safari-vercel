@@ -203,7 +203,7 @@
 											{% for cart_item in cart_items %}
 											<li>
 												<a href="#" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
-												<a class="cart-img" href="#"><img src="{{cart_item.photo.webp_image.url}}" style="width: 70px; height: auto"alt="{{cart_item.photo.title}}"></a>
+												<a class="cart-img" href="#"><img src="{{cart_item.photo.webp_image}}" style="width: 70px; height: auto"alt="{{cart_item.photo.title}}"></a>
 												<h4><a href="#">{{cart_item.photo.title}}</a></h4>
 												<p class="quantity">{{cart_item.quantity}}x - <span class="amount">Sh. {{cart_item.price}}</span></p>
 											</li>

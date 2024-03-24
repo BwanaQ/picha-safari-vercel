@@ -20,7 +20,7 @@
                     <tbody>
                         {% for item in items%}
                         <tr>
-                            <td class="image" data-title="No"><img style="width:100px;height:auto"src=" {{item.photo.webp_image.url}}" alt="{{item.photo.title}}"></td>
+                            <td class="image" data-title="No"><img style="width:100px;height:auto"src=" {{item.photo.webp_image}}" alt="{{item.photo.title}}"></td>
                             <td class="product-des" data-title="Description">
                                 <p class="product-name"><a href="#">{{item.photo.title}}</a></p>
                                 <p class="product-des">{{item.photo.description}}</p>
