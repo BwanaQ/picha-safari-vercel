@@ -29,6 +29,9 @@
                 <th  style="color: #F49F1B;">
                   Category
                 </th>
+                <th  style="color: #F49F1B;">
+                  Approval
+                </th>
                 <th style="color: #F49F1B;">
                   Price
                 </th>
@@ -52,6 +55,17 @@
                   {{photo.category}}
                 </td>
                 <td>
+                  {% if photo.approval %}
+                      {% if photo.approval.is_approved %}
+                          <span style="color: green;">Approved</span>
+                      {% else %}
+                          <span style="color: red;">Not Approved</span>
+                      {% endif %}
+                  {% else %}
+                      <span style="color: gray;">Pending</span>
+                  {% endif %}
+              </td>
+                <td>
                   <strong>KShs. {{photo.price}}</strong>
                 </td>
                 <td style="text-align: center; vertical-align: middle;">
@@ -74,7 +88,15 @@
                   <i class="fa fa-times"></i>
 
               </a>
-              
+              {% if photo.approval %}
+                  <a href="{% url 'photo_edit_approval' photo.id %}" rel="tooltip" title="Edit Approval" class="btn btn-primary btn-sm btn-icon">
+                      <i class="fa fa-edit"></i>
+                  </a>
+              {% else %}
+                  <a href="{% url 'photo_create_approval' photo.id %}" rel="tooltip" title="Create Approval" class="btn btn-success btn-sm btn-icon">
+                      <i class="fa fa-plus"></i>
+                  </a>
+              {% endif %}
                </td>
               </tr>
               {% endfor %}  

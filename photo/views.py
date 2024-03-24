@@ -7,8 +7,39 @@ from django.contrib.messages.views import SuccessMessageMixin
 from .models import Photo, Tag, Category
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
-from .forms import PhotoCreateForm
+from .forms import PhotoCreateForm, ApprovalForm
+from django.shortcuts import redirect, get_object_or_404
 
+def photo_edit_approval(request, photo_id):
+    photo = get_object_or_404(Photo, pk=photo_id)
+    approval = photo.approval
+
+    if request.method == 'POST':
+        form = ApprovalForm(request.POST, instance=approval)
+        if form.is_valid():
+            approval = form.save(commit=False)
+            approval.photo = photo
+            approval.approved_by = request.user
+            approval.save()
+            return redirect('photo_list')
+    else:
+        form = ApprovalForm(instance=approval)
+    return render(request, 'photo/approve_photo.html', {'form': form, 'photo': photo})
+
+def photo_create_approval(request, photo_id):
+    photo = get_object_or_404(Photo, pk=photo_id)
+
+    if request.method == 'POST':
+        form = ApprovalForm(request.POST)
+        if form.is_valid():
+            approval = form.save(commit=False)
+            approval.photo = photo
+            approval.approved_by = request.user
+            approval.save()
+            return redirect('photo_list')
+    else:
+        form = ApprovalForm()
+    return render(request, 'photo/approve_photo.html', {'form': form, 'photo': photo})
 
 class PhotoListView(LoginRequiredMixin, ListView):
     model = Photo
@@ -32,8 +63,6 @@ class PhotoCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     
     def form_valid(self, form):
         form.instance.owner = self.request.user
-        form.instance.approved = False  # Set approved to False by default
-        form.instance.comments = ""  # Set comments to empty by default
         response = super().form_valid(form)
         return response
 

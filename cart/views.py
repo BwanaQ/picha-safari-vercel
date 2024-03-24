@@ -121,8 +121,8 @@ class WalletTransactionListView(LoginRequiredMixin, ListView):
 
 @login_required(login_url='login')
 def index(request):
-    photos = Photo.objects.all()
-    paginator = Paginator(photos, 9)
+    approved_photos = Photo.objects.filter(approval__is_approved=True)
+    paginator = Paginator(approved_photos, 9)
     page_number = request.GET.get('page')
     try:
         photos = paginator.page(page_number)

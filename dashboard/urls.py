@@ -2,7 +2,7 @@ from django.urls import path
 from .views import home_view
 from photo.views import PhotoListView, PhotoDetailView, PhotoCreateView, PhotoUpdateView, PhotoDeleteView
 from photo.views import TagListView, TagDetailView, TagCreateView, TagUpdateView, TagDeleteView
-from photo.views import CategoryListView, CategoryDetailView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView
+from photo.views import CategoryListView, CategoryDetailView, CategoryCreateView, CategoryUpdateView, CategoryDeleteView, photo_edit_approval, photo_create_approval
 from cart.views import TransactionListView, transaction_detail_view, WalletTransactionListView
 
 urlpatterns = [
@@ -12,6 +12,8 @@ urlpatterns = [
     path('photos/add/', PhotoCreateView.as_view(), name='photo_create'),
     path('photos/<int:pk>/edit/', PhotoUpdateView.as_view(), name='photo_edit'),
     path('photos/<int:pk>/delete/', PhotoDeleteView.as_view(), name='photo_delete'),
+    path('photo/<int:photo_id>/approve/', photo_create_approval, name='photo_create_approval'),
+    path('photo/<int:photo_id>/approve/edit/', photo_edit_approval, name='photo_edit_approval'),
     # category URLs
     path('categories/', CategoryListView.as_view(), name='category_list'),
     path('categories/<int:pk>/', CategoryDetailView.as_view(), name='category_detail'),
