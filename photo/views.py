@@ -22,7 +22,7 @@ class PhotoDetailView(LoginRequiredMixin, DetailView):
 class PhotoCreateView(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     model = Photo
     template_name = 'photo/photo_form.html'  
-    fields = ['title', 'description', 'category', 'tags', 'image','webp_image', 'price'] 
+    fields = ['title', 'description', 'category', 'tags', 'image', 'price'] 
     success_url = reverse_lazy('photo_list')  
     success_message = "The Photo was created successfully!"
     

@@ -4,7 +4,7 @@ from cloudinary.models import CloudinaryField
 from django.conf import settings
 import cloudinary.uploader
 import uuid
-import os
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=100, blank=True, null=True)
@@ -24,7 +24,7 @@ class Photo(Timestamp):
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, blank=True)
     image = CloudinaryField('image')
-    webp_image = models.URLField(blank=True)  # Change to URLField to store the URL
+    webp_image = models.URLField(blank=True)  # Field to store WebP image URL
     price = models.DecimalField(max_digits=8, decimal_places=2)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, related_name='photos', on_delete=models.CASCADE)
 
@@ -32,27 +32,25 @@ class Photo(Timestamp):
         return f"{self.title} @ KES {self.price}"
 
     def save(self, *args, **kwargs):
-        # Convert the original image to WebP format and save the URL
-        if self.image and not self.webp_image:
-            # Upload the original image to Cloudinary
-            upload_result = cloudinary.uploader.upload(self.image.file)
-            original_url = upload_result['secure_url']
-
-            # Generate a unique identifier for the WebP filename
-            unique_identifier = uuid.uuid4().hex
-
-            # Construct the filename for the WebP version of the image
-            original_filename, original_extension = os.path.splitext(upload_result['public_id'])
-            webp_filename = f"{original_filename}_webp_{unique_identifier}.webp"
-
-            # Construct the URL for the WebP version of the image
-            webp_url = f"{upload_result['secure_url'][:-4]}/{webp_filename}"
-
-            # Save the WebP image URL
-            self.webp_image = webp_url
-
-            # Convert the original image to WebP format and upload to Cloudinary
-            cloudinary.uploader.upload(self.image.file, public_id=webp_filename, format="webp")
-
+        # Convert and save the image to WebP format
+        if self.image:
+            # Check if the image is already stored in Cloudinary
+            if hasattr(self.image, 'url'):
+                # If the image is already stored in Cloudinary, construct the WebP image URL
+                original_image_url = self.image.url
+                webp_image_url = f"{original_image_url}.webp"
+                
+                # Save the WebP image URL
+                self.webp_image = webp_image_url
+            else:
+                # If the image is uploaded via a form, upload it to Cloudinary and convert it to WebP format
+                upload_result = cloudinary.uploader.upload(self.image, format="webp")
+                
+                # Get the secure URL of the uploaded image in WebP format
+                webp_image_url = upload_result['secure_url']
+                
+                # Save the WebP image URL
+                self.webp_image = webp_image_url
+        
+        # Call the superclass's save method to save the object
         super().save(*args, **kwargs)
-
