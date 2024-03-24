@@ -6,7 +6,7 @@ from .models import Photo, Tag, Category
 class PhotoCreateForm(ModelForm):
     class Meta:
         model = Photo
-        exclude = ['owner']
+        exclude = ['owner','webp_image']
 
 class TagCreateForm(ModelForm):
     class Meta:

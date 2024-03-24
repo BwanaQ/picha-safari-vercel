@@ -50,7 +50,7 @@
                 <ul class="nav">
                     <li class="{% if request.resolver_match.url_name == 'cart-home' %}active{% endif %}">
                         <a href="{% url 'cart-home' %}">
-                        <i class="nc-icon nc-layout-11"></i>
+                        <i class="nc-icon nc-spaceship"></i>
                         <p>Main Site</p>
                         </a>
                     </li>
@@ -68,14 +68,14 @@
                     </li>
                     <li class="{% if request.resolver_match.url_name == 'category_list' %}active{% endif %}">
                         <a href="{% url 'category_list' %}">
-                            <i class="nc-icon nc-album-2"></i>
+                            <i class="nc-icon nc-chart-pie-36"></i>
                             <p>Categories</p>
                         </a>
                     </li>
 
                     <li class="{% if request.resolver_match.url_name == 'tag_list' %}active{% endif %}">
                         <a href="{% url 'tag_list' %}">
-                            <i class="nc-icon nc-album-2"></i>
+                            <i class="nc-icon nc-bullet-list-67"></i>
                             <p>Tags</p>
                         </a>
                     </li>

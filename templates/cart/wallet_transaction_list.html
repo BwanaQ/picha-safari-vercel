@@ -10,7 +10,7 @@
                 <div class="row">
                     <div class="col-5 col-md-4">
                         <div class="icon-big text-center icon-warning">
-                            <i class="nc-icon nc-globe text-warning"></i>
+                            <i class="nc-icon nc-cart-simple text-warning"></i>
                         </div>
                     </div>
                     <div class="col-7 col-md-8">
@@ -64,7 +64,7 @@
                 <div class="row">
                     <div class="col-5 col-md-4">
                         <div class="icon-big text-center icon-warning">
-                            <i class="nc-icon nc-vector text-danger"></i>
+                            <i class="nc-icon nc-credit-card text-warning"></i>
                         </div>
                     </div>
                     <div class="col-7 col-md-8">
@@ -92,7 +92,7 @@
                 <div class="row">
                     <div class="col-5 col-md-4">
                         <div class="icon-big text-center icon-warning">
-                            <i class="nc-icon nc-favourite-28 text-primary"></i>
+                            <i class="nc-icon nc-delivery-fast text-primary"></i>
                         </div>
                     </div>
                     <div class="col-7 col-md-8">
@@ -119,7 +119,13 @@
 <div class="col-md-12">
     <div class="card">
       <div class="card-header">
-        <h4 class="card-title">Wallet Transactions - {{user.first_name}} {{user.last_name}}</h4>
+          {% if request.user.is_superuser %}
+            <h4 class="card-title">Wallet Transactions</h4>
+          {% else %}
+            <h4 class="card-title">Wallet Transactions - {{user.first_name}} {{user.last_name}}</h4>
+
+          {% endif %}
+
       </div>
       <div class="card-body">
         <div class="table-responsive">
