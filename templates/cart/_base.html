@@ -88,9 +88,33 @@
 			object-fit: cover;
 		}
 	</style>
-
-
-
+	<style>
+		/* Style for the floating cart button */
+		.floating-cart {
+		position: fixed;
+		bottom: 60px;
+		right: 10px;
+		z-index: 999;
+		}
+		.btn-circle.btn-xl {
+		width: 40px;
+		height: 40px;
+		padding: 9px 8px;
+		border-radius: 60px;
+		font-size: 20px;
+		text-align: center;
+		}
+		.cart-popup {
+		position: fixed;
+		bottom: 120px;
+		right: 10px;
+		background-color: #fff;
+		border: 1px solid #ccc;
+		padding: 10px;
+		display: none; /* Hide by default */
+		z-index: 1000;
+		}
+	</style>
 </head>
 <body class="js">
 
@@ -375,6 +399,18 @@
 		</footer>
 		<!-- /End Footer Area -->
 
+		<!-- Floating cart button -->
+		<div class="floating-cart">
+			<button id="cart-toggle" class="btn btn-round btn-warning btn-circle btn-xl"><i style="color: white" class="fa fa-shopping-basket"></i></button>
+		</div>
+
+		<!-- Cart Popup -->
+		<div id="cart-popup" class="cart-popup">
+			<!-- Cart content goes here -->
+			<p>This is your shopping cart.</p>
+			<p>Item 1: $10</p>
+			<p>Item 2: $20</p>
+		</div>
 
     <!-- Jquery -->
     <script src="{% static 'cart/js/jquery.min.js' %}"></script>
@@ -413,5 +449,21 @@
 	<!-- Active JS -->
 	<script src="{% static 'cart/js/active.js' %}"></script>
 	<script src="{% static 'cart/js/script.js' %}"></script>
+	
+	<script>
+		$(document).ready(function(){
+		  // Toggle cart popup on click
+		  $('#cart-toggle').click(function(){
+			$('#cart-popup').toggle();
+		  });
+	
+		  // Hide cart popup when clicking outside of it
+		  $(document).click(function(event) { 
+			if(!$(event.target).closest('#cart-toggle').length && !$(event.target).closest('#cart-popup').length) {
+			  $('#cart-popup').hide();
+			}        
+		  });
+		});
+	  </script>	
 </body>
 </html>
