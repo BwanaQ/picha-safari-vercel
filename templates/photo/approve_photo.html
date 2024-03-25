@@ -1,17 +1,17 @@
 {% extends 'dashboard/_base.html' %}
 {% load crispy_forms_tags%}
 {% block title %}
-  {% if request.resolver_match.url_name == 'category_create' %}
-    Add Category
+  {% if request.resolver_match.url_name == 'photo_create_approval' %}
+    Create Approval
   {% else %}
-    Edit Category
+    Edit Approval
   {% endif %}
 {% endblock title %}
 {% block navbarbrand %}
-  {% if request.resolver_match.url_name == 'category_create' %}
-    Add Category
+  {% if request.resolver_match.url_name == 'photo_create_approval' %}
+    Create Approval
   {% else %}
-    Edit Category
+  Edit Approval
   {% endif %}
 {% endblock %}
 

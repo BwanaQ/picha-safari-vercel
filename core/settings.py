@@ -121,10 +121,10 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "BwanaQ$picha-safari",
-        "USER": "BwanaQ",
-        "PASSWORD": "EMYx5Jp#iAqdE!@",
-        "HOST": "BwanaQ.mysql.pythonanywhere-services.com",
+        "NAME": "picha_safari",
+        "USER": "root",
+        "PASSWORD": "",
+        "HOST": "localhost",
     }
 }
 

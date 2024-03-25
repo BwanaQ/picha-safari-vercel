@@ -60,6 +60,17 @@
                         <p>Dashboard</p>
                         </a>
                     </li>
+                    {% if request.user.is_authenticated %}
+                    {% if request.user.is_superuser %}
+                    <li class="{% if request.resolver_match.url_name == 'photo_list_approval' %}active{% endif %}">
+                        <a href="{% url 'photo_list_approval' %}">
+                        <i class="nc-icon nc-check-2"></i>
+                        <p>Approvals</p>
+                        </a>
+                    </li>
+                    {% endif %}
+                    {% endif %}
+
                     <li class="{% if request.resolver_match.url_name == 'photo_list' %}active{% endif %}">
                         <a href="{% url 'photo_list' %}">
                             <i class="nc-icon nc-album-2"></i>

@@ -1,20 +1,18 @@
 {% extends 'dashboard/_base.html' %}
-{% block title %}My Photos{% endblock title %}
-{% block navbarbrand %}My Photos{% endblock %}
+{% block title %}Photos{% endblock title %}
+{% block navbarbrand %}Photos{% endblock %}
 
 {% block content %}
 <div class="row">
 
-<div class="col-md-12">
-    <a href="{% url 'photo_create' %}" class="btn btn-warning" style="color:black; float:right;">Add Photo</a>  
-</div>
+
 <div class="col-md-12">
 
     <div class="card">
       
 
       <div class="card-header">
-        <h4>My Photos</h4>
+        <h4>Photos</h4>
 
         </h4>    
         </div>
@@ -38,7 +36,12 @@
                 <th style="color: #F49F1B; text-align: center; vertical-align: middle;">
                   Thumbnail
                 </th>              
-
+                <th style="color: #F49F1B; text-align: center; vertical-align: middle;">
+                  Approved By
+                </th>                 
+                <th style="color: #F49F1B; text-align: center; vertical-align: middle;">
+                  Date
+                </th> 
                 <th class="text-center" style="color: #F49F1B;">
                   Actions
                 </th>
@@ -71,24 +74,30 @@
                 <td style="text-align: center; vertical-align: middle;">
                   <img style="width:50px; height: auto;" class="thumbnail" src="{{photo.webp_image}}" alt="{{photo.title}}">
                 </td>
+                  {% if photo.approval %}
+                    <td>{{photo.approval.approved_by.first_name}} {{photo.approval.approved_by.last_name}}</td>
+                    <td>{{photo.approval.approved_by.first_name}} {{photo.approval.approved_time}}</td>
+                  
+                  {% else %}
+                    <td>To Be Done</td>
+                    <td> -</td>
+
+                  {% endif %}
+                  {{photo.owner.first_name}} {{photo.owner.last_name}}
                 <td class="text-center">
                   
-              <a href="{% url 'photo_detail' photo.id %}"  rel="tooltip" title="View Photo" class="btn btn-info btn-sm btn-icon">
-                  <i class="fa fa-user"></i>
-              </a>
-
-              <a href="{% url 'photo_edit' photo.id %}"  rel="tooltip" title="Edit Photo" class="btn btn-success btn-sm btn-icon">
-
-                  <i class="fa fa-edit"></i>
-
-              </a>
-
-              <a href="{% url 'photo_delete' photo.id %}"  rel="tooltip" title="Remove" class="btn btn-danger btn-sm btn-icon">
-
-                  <i class="fa fa-times"></i>
-
-              </a>
-
+              
+              {% if request.user.is_staff %}
+                {% if photo.approval %}
+                    <a href="{% url 'photo_edit_approval' photo.id %}" rel="tooltip" title="Edit Approval" class="btn btn-primary btn-sm btn-icon">
+                        <i class="fa fa-edit"></i>
+                    </a>
+                {% else %}
+                    <a href="{% url 'photo_create_approval' photo.id %}" rel="tooltip" title="Create Approval" class="btn btn-success btn-sm btn-icon">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                {% endif %}
+              {% endif %}  
                </td>
               </tr>
               {% endfor %}  

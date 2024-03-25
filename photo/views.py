@@ -9,6 +9,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from .forms import PhotoCreateForm, ApprovalForm
 from django.shortcuts import redirect, get_object_or_404
+from django.contrib import messages
+
+class PhotoListApprovalView(LoginRequiredMixin, ListView):
+    model = Photo
+    template_name = 'photo/photo_list_approval.html'
+    context_object_name = 'photos'
+    
+ 
+
 
 def photo_edit_approval(request, photo_id):
     photo = get_object_or_404(Photo, pk=photo_id)
@@ -21,7 +30,8 @@ def photo_edit_approval(request, photo_id):
             approval.photo = photo
             approval.approved_by = request.user
             approval.save()
-            return redirect('photo_list')
+            messages.success(request, 'Approval updated successfully.')  # Add success message
+            return redirect('photo_list_approval')
     else:
         form = ApprovalForm(instance=approval)
     return render(request, 'photo/approve_photo.html', {'form': form, 'photo': photo})
@@ -36,10 +46,12 @@ def photo_create_approval(request, photo_id):
             approval.photo = photo
             approval.approved_by = request.user
             approval.save()
-            return redirect('photo_list')
+            messages.success(request, 'Approval created successfully.')  # Add success message
+            return redirect('photo_list_approval')
     else:
         form = ApprovalForm()
     return render(request, 'photo/approve_photo.html', {'form': form, 'photo': photo})
+
 
 class PhotoListView(LoginRequiredMixin, ListView):
     model = Photo
