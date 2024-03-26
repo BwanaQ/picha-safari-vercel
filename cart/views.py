@@ -119,6 +119,8 @@ class WalletTransactionListView(LoginRequiredMixin, ListView):
 
 
 def home(request):
+    if request.user.is_authenticated:
+        return redirect('cart-home') 
     approved_photos = Photo.objects.filter(approval__is_approved=True)
     paginator = Paginator(approved_photos, 9)
     page_number = request.GET.get('page')
