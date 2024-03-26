@@ -4,7 +4,7 @@ from cart.views import index, add_to_cart, cart, checkout, remove_from_cart, pro
 urlpatterns = [
     path('', index, name='cart-home'),
     path('add_to_cart', add_to_cart, name='add'),
-    path('remove_from_cart', remove_from_cart, name='remove'),
+    path('remove_from_cart/<int:item_id>/', remove_from_cart, name='remove'),
     path('cart', cart, name='cart'),
 
     path('checkout', checkout, name='checkout'),

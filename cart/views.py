@@ -183,11 +183,16 @@ def remove_from_cart(request, item_id):
         cart = Cart.objects.get(user=request.user, completed=False)
         cart_item = get_object_or_404(CartItem, cart=cart, id=item_id)
         cart_item.delete()
-        return JsonResponse({'message': 'Item removed from cart successfully.'})
+        messages.success(request,"Item removed from cart successfully.")
+        return redirect("cart")
     except Cart.DoesNotExist:
-        return JsonResponse({'error': 'Cart not found.'}, status=404)
+        messages.error(request,"Cart Does not Exist.")
+
+        return redirect("cart-home")
     except CartItem.DoesNotExist:
-        return JsonResponse({'error': 'CartItem not found.'}, status=404)
+        messages.error(request,"Cart Item Does not Exist.")
+
+        return redirect("cart-home")
 
 @login_required(login_url='login')
 def checkout(request):
