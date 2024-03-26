@@ -118,7 +118,22 @@ class WalletTransactionListView(LoginRequiredMixin, ListView):
 
 
 
+def home(request):
+    approved_photos = Photo.objects.filter(approval__is_approved=True)
+    paginator = Paginator(approved_photos, 9)
+    page_number = request.GET.get('page')
+    try:
+        photos = paginator.page(page_number)
+    except PageNotAnInteger:
+        photos=paginator.page(1)
+    except EmptyPage:
+        photos = paginator.page(paginator.num_pages)
 
+
+    tags = Tag.objects.all()
+    categories = Category.objects.all()
+    context = {"photos": photos, "tags": tags, "categories": categories}
+    return render (request, "cart/home.html", context)
 @login_required(login_url='login')
 def index(request):
     approved_photos = Photo.objects.filter(approval__is_approved=True)

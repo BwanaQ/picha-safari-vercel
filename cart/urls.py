@@ -1,8 +1,9 @@
 from django.urls import path
-from cart.views import index, add_to_cart, cart, checkout, remove_from_cart, process_paypal_payment, paypal_return , paypal_cancel, paymentIPN, callback, newsletter_signup
+from cart.views import home, index, add_to_cart, cart, checkout, remove_from_cart, process_paypal_payment, paypal_return , paypal_cancel, paymentIPN, callback, newsletter_signup
 """,payment_checkout"""
 urlpatterns = [
-    path('', index, name='cart-home'),
+    path('', home, name='home'),
+    path('shop/', index, name='cart-home'),
     path('add_to_cart', add_to_cart, name='add'),
     path('remove_from_cart/<int:item_id>/', remove_from_cart, name='remove'),
     path('cart', cart, name='cart'),

@@ -30,4 +30,4 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect('login')  # Redirect to login page after logout
+    return redirect('home')  # Redirect to login page after logout
