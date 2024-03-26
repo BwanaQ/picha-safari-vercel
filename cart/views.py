@@ -184,7 +184,10 @@ def remove_from_cart(request, item_id):
         cart_item = get_object_or_404(CartItem, cart=cart, id=item_id)
         cart_item.delete()
         messages.success(request,"Item removed from cart successfully.")
-        return redirect("cart")
+        if 'HTTP_REFERER' in request.META:
+            return HttpResponseRedirect(request.META['HTTP_REFERER'])
+        else:
+            return redirect("cart-home")
     except Cart.DoesNotExist:
         messages.error(request,"Cart Does not Exist.")
 
