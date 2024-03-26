@@ -121,10 +121,10 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "picha_safari",
-        "USER": "root",
-        "PASSWORD": "",
-        "HOST": "localhost",
+        "NAME": "BwanaQ$picha-safari",
+        "USER": "BwanaQ",
+        "PASSWORD": "EMYx5Jp#iAqdE!@",
+        "HOST": "BwanaQ.mysql.pythonanywhere-services.com",
     }
 }
 
@@ -186,7 +186,7 @@ cloudinary.config(
   cloud_name = config('CLOUDINARY_CLOUD_NAME'),
   api_key = config('CLOUDINARY_API_KEY'),
   api_secret = config('CLOUDINARY_API_SECRET'),
-#   api_proxy = 'http://proxy.server:3128'
+  api_proxy = 'http://proxy.server:3128'
 )
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
