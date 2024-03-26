@@ -95,7 +95,7 @@ function updateCartItems(cartItems) {
 // Function to create cart item element
 function createCartItemElement(cartItem, photo) {
     const listItem = document.createElement("li");
-    const url = `/remove_from_cart/${cartItem.id}`
+    const url = `/remove_from_cart/${cartItem.id}/`
     listItem.innerHTML = `
         <a href="${url}" class="remove" title="Remove this item"><i class="fa fa-remove"></i></a>
         <a class="cart-img" href="#"><img src="${photo.webp_image}" style="width: 70px; height: auto" alt="${photo.title}"></a>
